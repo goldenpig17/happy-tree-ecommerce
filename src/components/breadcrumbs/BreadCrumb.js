@@ -6,7 +6,7 @@ const BreadCrumb = ({ breadcrumbs }) => {
         <div className="breadcrumb">
             {breadcrumbs.map((crumb, index) => (
                 <span key={index}>
-                    {index !== 0 && " > "} {/* Add a separator except for the first item */}
+                    {index !== 0 && " > "} 
                     <Link to={crumb.url}>{crumb.name}</Link>
                 </span>
             ))}
