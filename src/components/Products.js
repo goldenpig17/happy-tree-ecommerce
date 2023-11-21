@@ -62,7 +62,7 @@ export default function Products() {
                     <BreadCrumb breadcrumbs={breadcrumbs} />
                     <div className="container main-container">
                         <div style={{ display: 'flex' }}>
-                            <div style={{ flex: 1 }}> {/* Filter section */}
+                            <div style={{ flex: 1 }}> 
                                 <ProductFilter />
                             </div>
                             <div style={{ flex: 2 }}>
