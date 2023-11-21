@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { setMinPrice, setMaxPrice, setProductName } from '../actions/actions';
+import { toggleProductType } from '../actions/actions';
 
-export default function ProductFilter({ onFilter }) {
-    const [name, setName] = useState('');
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
-    const [types, setTypes] = useState([]);
+export default function ProductFilter() {
+    //const [name, setName] = useState('');
+    //const [minPrice, setMinPrice] = useState('');
+    //const [maxPrice, setMaxPrice] = useState('');
+    //const [types, setTypes] = useState([]);
 
-    const handleTypeChange = (type) => {
-        const updatedTypes = types.includes(type)
-            ? types.filter(t => t !== type)
-            : [...types, type];
-        setTypes(updatedTypes);
+    const dispatch = useDispatch();
+
+    const handleNameChange = (event) => {
+        dispatch(setProductName(event.target.value));
     };
 
+    const handleMaxPriceChange = (event) => {
+        dispatch(setMaxPrice(event.target.value));
+    };
+    // Handle min price change
+    const handleMinPriceChange = (event) => {
+        dispatch(setMinPrice(event.target.value));
+    };
+    // Handle product type change
+    const handleTypeChange = (type) => {
+        dispatch(toggleProductType(type));
+    };
+    const selectedTypes = useSelector(state => state.filter.productType);
     const handleSubmit = (event) => {
         event.preventDefault();
-        onFilter({ name, minPrice, maxPrice, types });
     };
 
     // Inline styles
@@ -40,16 +53,6 @@ export default function ProductFilter({ onFilter }) {
         marginBottom: '5px'
     };
 
-    const filterButtonStyle = {
-        padding: '10px 20px',
-        backgroundColor: 'red',
-        color: 'white',
-        border: 'none',
-        borderRadius: '20px',
-        cursor: 'pointer',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        marginTop: '10px'
-    };
 
 
     return (
@@ -60,8 +63,7 @@ export default function ProductFilter({ onFilter }) {
                     <input
                         style={inputStyle}
                         type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={handleNameChange}
                     />
                 </label>
             </div>
@@ -71,8 +73,7 @@ export default function ProductFilter({ onFilter }) {
                     <input
                         style={inputStyle}
                         type="number"
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
+                        onChange={handleMinPriceChange}
                     />
                 </label>
                 <label style={filterLabelStyle}>
@@ -80,41 +81,23 @@ export default function ProductFilter({ onFilter }) {
                     <input
                         style={inputStyle}
                         type="number"
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(e.target.value)}
+                        onChange={handleMaxPriceChange}
                     />
                 </label>
             </div>
             <div>
-                <label style={filterLabelStyle}>
-                    <input
-                        type="checkbox"
-                        value="Hybrid"
-                        checked={types.includes('Hybrid')}
-                        onChange={() => handleTypeChange('Hybrid')}
-                    />
-                    Hybrid
-                </label>
-                <label>
-                    <input
-                        type="checkbox"
-                        value="Sativa"
-                        checked={types.includes('Sativa')}
-                        onChange={() => handleTypeChange('Sativa')}
-                    />
-                    Sativa
-                </label>
-                <label>
-                    <input
-                        type="checkbox"
-                        value="Indica"
-                        checked={types.includes('Indica')}
-                        onChange={() => handleTypeChange('Indica')}
-                    />
-                    Indica
-                </label>
+                {['Indica', 'Hybrid', 'Sativa'].map((type) => (
+                    <label key={type}>
+                        <input
+                            type="checkbox"
+                            value={type}
+                            checked={selectedTypes.includes(type)}
+                            onChange={() => handleTypeChange(type)}
+                        />
+                        {type}
+                    </label>
+                ))}
             </div>
-            <button type="submit" style={filterButtonStyle}>Lọc</button>
         </form>
     );
 }
