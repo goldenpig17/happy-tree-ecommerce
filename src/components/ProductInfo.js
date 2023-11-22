@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from './header/Header';
 import Footer from './footer/Footer';
@@ -14,6 +14,7 @@ const ProductInfo = () => {
     const productDetails = useSelector((state) => state.products.productDetails);
     console.log(productDetails);
     const { isLoading, error } = useSelector(state => state.products);
+    const [quantity, setQuantity] = useState(1); // State for product quantity
 
     useEffect(() => {
         if (_id) {
@@ -21,14 +22,24 @@ const ProductInfo = () => {
         }
     }, [dispatch, _id]);
 
+    // Increment product quantity
+    const incrementQuantity = () => {
+        setQuantity(quantity + 1);
+    };
+
+    // Decrement product quantity but not less than 1
+    const decrementQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
+        }
+    };
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
-
     if (error) {
         return <div>Error: {error}</div>;
     }
-
     if (!productDetails) {
         return <div>Product not found</div>;
     }
@@ -44,7 +55,7 @@ const ProductInfo = () => {
             <Header />
             <BreadCrumb breadcrumbs={breadcrumbs} />
             <h1 style={{ textAlign: 'center' }}>Thông tin chi tiết</h1>
-            <div className="product-info-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <div className="product-info-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <div className="product-image" style={{ flex: 1 }}>
                     <img
                         src={productDetails.data.imageUrl}
@@ -56,6 +67,11 @@ const ProductInfo = () => {
                     <h1>{productDetails.data.name}</h1>
                     <p>Giá: ${productDetails.data.buyPrice}</p>
                     <p>Loại: {productDetails.data.category}</p>
+                    <div>
+                        <button onClick={decrementQuantity}>-</button>
+                        <span>{quantity}</span>
+                        <button onClick={incrementQuantity}>+</button>
+                    </div>
                     <button type="button" className="btn btn-primary">Thêm vào giỏ</button>
                 </div>
             </div>
