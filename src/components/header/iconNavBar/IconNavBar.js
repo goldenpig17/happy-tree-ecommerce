@@ -5,11 +5,31 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import { Menu, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import Badge from '@mui/material/Badge';
+import { useEffect } from 'react';
 
 export default function IconNavBar() {
+    const [cartItemCount, setCartItemCount] = React.useState(0);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const navigate = useNavigate();
+
+    // Retrieve the cart data from local storage
+    const updateCartCount = () => {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        setCartItemCount(cart.length);
+    };
+
+    useEffect(() => {
+        updateCartCount();
+
+        // Custom event listener for cart updates
+        window.addEventListener('cartUpdated', updateCartCount);
+
+        // Clean up the event listener
+        return () => {
+            window.removeEventListener('cartUpdated', updateCartCount);
+        };
+    }, []);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -31,6 +51,9 @@ export default function IconNavBar() {
         handleClose();
     };
 
+    const handleCart = () => {
+        navigate("/cart");
+    };
     return (
         <div>
             <IconButton
@@ -42,7 +65,9 @@ export default function IconNavBar() {
             >
                 <NotificationsIcon></NotificationsIcon>
                 <AccountCircleIcon onClick={handleMenu}></AccountCircleIcon>
-                <ShoppingCartIcon></ShoppingCartIcon>
+                <Badge badgeContent={cartItemCount} color="secondary">
+                    <ShoppingCartIcon onClick={handleCart} />
+                </Badge>
             </IconButton>
             <Menu
                 id="menu-appbar"

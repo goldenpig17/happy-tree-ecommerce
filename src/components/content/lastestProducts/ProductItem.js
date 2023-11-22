@@ -10,6 +10,30 @@ const ProductItem = ({ name, imageUrl, description, category, buyPrice, _id }) =
         // Prevent default anchor action
         navigate(`/products/${_id}`);
     };
+    const addToCart = () => {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+        // Check if the product with the same _id already exists in the cart
+        const existingProductIndex = cart.findIndex((product) => product.id === _id);
+
+        if (existingProductIndex !== -1) {
+            // If the product exists, update its quantity
+            cart[existingProductIndex].quantity += 1;
+        } else {
+            // If the product doesn't exist, add it to the cart with quantity 1
+            const productToAdd = {
+                id: _id,
+                name: name,
+                price: buyPrice,
+                quantity: 1
+            };
+            cart.push(productToAdd);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        // Dispatch a custom event
+        window.dispatchEvent(new Event('cartUpdated'));
+    };
 
     return (
         <div className="col-6 col-sm-4">
@@ -37,7 +61,7 @@ const ProductItem = ({ name, imageUrl, description, category, buyPrice, _id }) =
                         <b>Giá:</b> {buyPrice} $
                     </p>
                     <div className="add-cart-container text-center">
-                        <button type="button" className="btn btn-primary">Thêm vào giỏ</button>
+                        <button type="button" className="btn btn-primary" onClick={addToCart}>Thêm vào giỏ</button>
                         <button type="button" className="btn btn-secondary" onClick={navigateToProductDetails}>Chi tiết</button>
                     </div>
                 </div>
