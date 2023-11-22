@@ -1,42 +1,49 @@
-import { Component } from "react";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-class ProductItem extends Component {
-    render() {
-        return (
-            <div className="col-6 col-sm-4">
-                <div className="product-box card bg-light mb-3">
-                    <div className="card-header">
-                        <h5 className="card-title">
-                            <a href="!">{this.props.name}</a>
-                        </h5>
+const ProductItem = ({ name, imageUrl, description, category, buyPrice, _id }) => {
+    console.log(_id);
+    console.log(name);
+    const navigate = useNavigate();
+
+    const navigateToProductDetails = () => {
+        // Prevent default anchor action
+        navigate(`/products/${_id}`);
+    };
+
+    return (
+        <div className="col-6 col-sm-4">
+            <div className="product-box card bg-light mb-3">
+                <div className="card-header text-center">
+                    <h5 className="card-title">
+                        <button className="btn btn-link" onClick={navigateToProductDetails}>{name}</button>
+                    </h5>
+                </div>
+                <div className="card-body">
+                    <div className="text-center">
+                        <img
+                            className="card-img-top"
+                            alt="product"
+                            src={imageUrl}
+                            onClick={navigateToProductDetails}
+                            style={{ cursor: 'pointer' }}
+                        />
                     </div>
-                    <div className="card-body">
-                        <div className="text-center">
-                            <a href="!">
-                                <img
-                                    className="card-img-top"
-                                    alt="product"
-                                    src={this.props.imageUrl}>
-                                </img>
-                            </a>
-                        </div>
-                        <p className="card-text description">{this.props.description}</p>
-                        <p className="card-text">
-                            <b>Type:</b>
-                            {this.props.category}
-                        </p>
-                        <p className="card-text">
-                            <b>Price:</b>
-                            {this.props.buyPrice} $
-                        </p>
-                        <div className="add-cart-container">
-                            <button type="button" className="btn btn-primary">Add to Cart</button>
-                        </div>
+                    <p className="card-text description">{description}</p>
+                    <p className="card-text">
+                        <b>Loại:</b> {category}
+                    </p>
+                    <p className="card-text">
+                        <b>Giá:</b> {buyPrice} $
+                    </p>
+                    <div className="add-cart-container text-center">
+                        <button type="button" className="btn btn-primary">Thêm vào giỏ</button>
+                        <button type="button" className="btn btn-secondary" onClick={navigateToProductDetails}>Chi tiết</button>
                     </div>
                 </div>
             </div>
-        )
-    }
-}
+        </div>
+    );
+};
 
 export default ProductItem;

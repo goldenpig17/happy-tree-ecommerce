@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+.small-image {
+  width: 25%; /* Giảm kích thước xuống còn 1/4 */
+  height: auto; /* Đảm bảo tỷ lệ khung hình không bị thay đổi */
+}

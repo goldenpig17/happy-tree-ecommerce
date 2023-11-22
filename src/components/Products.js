@@ -60,15 +60,19 @@ export default function Products() {
             {!isLoading && !error && (
                 <div>
                     <BreadCrumb breadcrumbs={breadcrumbs} />
+                    <div className="container main-container text-center">
+                         <h1>Danh sách sản phẩm</h1>
+                    </div>
                     <div className="container main-container">
                         <div style={{ display: 'flex' }}>
-                            <div style={{ flex: 1 }}> 
+                            <div style={{ flex: 1 }}>
                                 <ProductFilter />
                             </div>
                             <div style={{ flex: 2 }}>
                                 <div className='row'>
-                                    {currentItems.map((product, index) => (
-                                        <ProductItem key={index}
+                                    {currentItems.map((product, _id) => (
+                                        <ProductItem key={_id}
+                                            _id={product._id}
                                             name={product.name}
                                             imageUrl={product.imageUrl}
                                             description={product.description}

@@ -13,7 +13,7 @@ export const FETCH_PRODUCTS_FAILURE = 'FETCH_PRODUCTS_FAILURE';
 
 // action creators
 
-export const fetchProducts = (filters) => async (dispatch) => {
+export const fetchProducts = () => async (dispatch) => {
     dispatch({ type: FETCH_PRODUCTS_START });
 
     try {
@@ -25,7 +25,6 @@ export const fetchProducts = (filters) => async (dispatch) => {
         console.log('Fetched Products:', data); // Log the fetched products
         dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: data.data });
     } catch (error) {
-        console.error('Fetch error:', error);
         dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
     }
 };
@@ -59,3 +58,23 @@ export const setCurrentPage = (page) => ({
     type: SET_CURRENT_PAGE,
     payload: page,
 });
+
+export const fetchProductDetails = (_id) => {
+    return async (dispatch) => {
+        try {
+            dispatch({ type: 'FETCH_PRODUCT_DETAILS_REQUEST' });
+
+            const response = await fetch(`http://localhost:8000/product/${_id}`);
+
+            if (!response.ok) {
+                throw new Error('Không tìm thấy product details');
+            }
+
+            const productDetails = await response.json();
+            dispatch({ type: 'FETCH_PRODUCT_DETAILS_SUCCESS', payload: productDetails });
+        } catch (error) {
+            dispatch({ type: 'FETCH_PRODUCT_DETAILS_FAILURE', error: error.message });
+        }
+    };
+};
+

@@ -30,9 +30,9 @@ export default function LatestProducts() {
                 <div className='row'>
                     {products.slice(0, 6).map((product, _id) => (
                         <ProductItem key={_id}
+                        _id={product._id}
                         name={product.name}
                         imageUrl={product.imageUrl}
-                        description={product.description}
                         category={product.category}
                         buyPrice={product.promotionPrice}>
                         </ProductItem>
