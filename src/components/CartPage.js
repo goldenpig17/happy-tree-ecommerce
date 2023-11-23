@@ -1,80 +1,94 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateQuantity } from '../actions/actions';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    IconButton,
+    Paper,
+    Box,
+    Typography,
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const CartPage = () => {
-    // Initialize cart from local storage
-    const [cart, setCart] = useState(() => {
-        const savedCart = localStorage.getItem('cart');
-        const parsedCart = savedCart ? JSON.parse(savedCart) : [];
-        // Ensure each product has a valid price and quantity
-        return parsedCart.map(item => ({
-            ...item,
-            price: item.price || 0,
-            quantity: item.quantity || 1,
-        }));
-    });
+    const dispatch = useDispatch();
+    const cart = useSelector(state => state.cart.items);
 
-    // Calculate the total price of the cart
-    const calculateTotal = (cart) => {
-        return cart.reduce((total, item) => {
-            const itemPrice = item.price || 0;
-            const itemQuantity = item.quantity || 0;
-            return total + itemPrice * itemQuantity;
-        }, 0).toFixed(2);
+    const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+
+    const handleQuantityChange = (_id, increment) => {
+        if (increment) {
+            dispatch(updateQuantity(_id, true));
+        } else {
+            const product = cart.find(item => item._id === _id);
+            if (product && product.quantity === 1) {
+                handleRemove(_id);
+            } else {
+                dispatch(updateQuantity(_id, false));
+            }
+        }
     };
 
-    // State for the total price of the cart
-    const [totalPrice, setTotalPrice] = useState(() => calculateTotal(cart));
-
-    // Update the total price when the cart changes
-    useEffect(() => {
-        setTotalPrice(calculateTotal(cart));
-    }, [cart]);
-
-    // Function to handle quantity changes
-    const handleQuantityChange = (_id, increment) => {
-        const updatedCart = cart.map(item => {
-            if (item._id === _id) {
-                const updatedQuantity = increment ? item.quantity + 1 : Math.max(item.quantity - 1, 0);
-                return { ...item, quantity: updatedQuantity };
-            }
-            return item;
-        }).filter(item => item.quantity > 0); // Loại bỏ sản phẩm nếu số lượng là 0
-        setCart(updatedCart);
-        console.log(updatedCart);
+    const handleRemove = (_id) => {
+        const updatedCart = cart.filter(item => item._id !== _id);
+        dispatch({ type: 'REMOVE_ITEM', payload: updatedCart });
         localStorage.setItem('cart', JSON.stringify(updatedCart));
     };
 
     return (
-        <>
-            <h1>Shopping Cart</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {cart.map((product) => (
-                        <tr key={product._id}>
-                            <td>{product.name}</td>
-                            <td>${(product.price || 0).toFixed(2)}</td>
-                            <td>
-                                <button onClick={() => handleQuantityChange(product._id, false)}>-</button>
-                                <span>{product.quantity}</span>
-                                <button onClick={() => handleQuantityChange(product._id, true)}>+</button>
-                            </td>
-                            <td>${((product.price || 0) * (product.quantity || 0)).toFixed(2)}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <div>
-                <strong>Cart Total: ${totalPrice}</strong>
-            </div>
-        </>
+        <Box sx={{ padding: 2 }}>
+            <Typography variant="h4" gutterBottom>
+                Giỏ Hàng
+            </Typography>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Product</TableCell>
+                            <TableCell align="right">Price</TableCell>
+                            <TableCell align="right">Quantity</TableCell>
+                            <TableCell align="right">Total</TableCell>
+                            <TableCell align="right">Remove</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {cart.map((product) => (
+                            <TableRow key={product._id}>
+                                <TableCell>{product.name}</TableCell>
+                                <TableCell align="right">${product.price.toFixed(2)}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleQuantityChange(product._id, false)} disabled={product.quantity <= 1}>
+                                        <RemoveIcon />
+                                    </IconButton>
+                                    {product.quantity}
+                                    <IconButton onClick={() => handleQuantityChange(product._id, true)}>
+                                        <AddIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell align="right">${(product.price * product.quantity).toFixed(2)}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleRemove(product._id)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Box display="flex" justifyContent="flex-end" m={2}>
+                <Typography variant="h6">
+                    Tổng Đơn Hàng: ${totalPrice}
+                </Typography>
+            </Box>
+        </Box>
     );
 };
 

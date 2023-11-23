@@ -78,3 +78,37 @@ export const fetchProductDetails = (_id) => {
     };
 };
 
+export const addItem = item => {
+    return {
+        type: 'ADD_ITEM',
+        payload: item
+    };
+};
+
+export const removeItem = _id => {
+    return {
+        type: 'REMOVE_ITEM',
+        payload: _id
+    };
+};
+
+export const updateQuantity = (_id, increment) => {
+    return (dispatch, getState) => {
+        const { cart } = getState();
+        let updatedCart = cart.items.map(item => {
+            if (item._id === _id) {
+                const updatedQuantity = increment ? item.quantity + 1 : Math.max(item.quantity - 1, 0);
+                return { ...item, quantity: updatedQuantity };
+            }
+            return item;
+        });
+
+        updatedCart = updatedCart.filter(item => item.quantity > 0);
+        dispatch({
+            type: 'UPDATE_CART',
+            payload: updatedCart
+        });
+
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+    };
+};

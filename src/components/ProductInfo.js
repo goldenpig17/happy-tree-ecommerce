@@ -8,7 +8,7 @@ import { fetchProductDetails } from '../actions/actions';
 import LatestProducts from './content/lastestProducts/LatestProducts';
 import ViewAll from './content/viewAll/viewAll';
 
-const ProductInfo = () => {
+const ProductInfo = ({ name, buyPrice }) => {
     const { _id } = useParams();
     const dispatch = useDispatch();
     const productDetails = useSelector((state) => state.products.productDetails);
@@ -32,6 +32,31 @@ const ProductInfo = () => {
         if (quantity > 1) {
             setQuantity(quantity - 1);
         }
+    };
+
+    const addToCart = () => {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+        // Check if the product with the same _id already exists in the cart
+        const existingProductIndex = cart.findIndex((product) => product.id === _id);
+
+        if (existingProductIndex !== -1) {
+            // If the product exists, update its quantity
+            cart[existingProductIndex].quantity += 1;
+        } else {
+            // If the product doesn't exist, add it to the cart with quantity 1
+            const productToAdd = {
+                id: _id,
+                name: name,
+                price: buyPrice,
+                quantity: 1
+            };
+            cart.push(productToAdd);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        // Dispatch a custom event
+        window.dispatchEvent(new Event('cartUpdated'));
     };
 
     if (isLoading) {
@@ -72,7 +97,7 @@ const ProductInfo = () => {
                         <span>{quantity}</span>
                         <button onClick={incrementQuantity}>+</button>
                     </div>
-                    <button type="button" className="btn btn-primary">Thêm vào giỏ</button>
+                    <button type="button" className="btn btn-primary" onClick={addToCart}>Thêm vào giỏ</button>
                 </div>
             </div>
             <h3>Thông tin mô tả</h3>

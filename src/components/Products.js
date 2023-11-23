@@ -6,6 +6,7 @@ import ProductFilter from './ProductFilter';
 import BreadCrumb from './breadcrumbs/BreadCrumb';
 import Pagination from '@mui/material/Pagination';
 import { fetchProducts, setCurrentPage } from '../actions/actions';
+import Header from './header/Header';
 
 export default function Products() {
     const dispatch = useDispatch();
@@ -59,6 +60,7 @@ export default function Products() {
             {error && <div>Error: {error}</div>}
             {!isLoading && !error && (
                 <div>
+                    <Header />
                     <BreadCrumb breadcrumbs={breadcrumbs} />
                     <div className="container main-container text-center">
                          <h1>Danh sách sản phẩm</h1>
