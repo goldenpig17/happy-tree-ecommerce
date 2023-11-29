@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateQuantity } from '../actions/actions';
 import {
@@ -12,16 +12,24 @@ import {
     Paper,
     Box,
     Typography,
+    Button
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import OrderInfo from './orders/OrderInfo';
 
 const CartPage = () => {
     const dispatch = useDispatch();
     const cart = useSelector(state => state.cart.items);
 
     const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+
+    const [showOrderInfo, setShowOrderInfo] = useState(false);
+
+    const handlePurchaseClick = () => {
+        setShowOrderInfo(true);
+    };
 
     const handleQuantityChange = (_id, increment) => {
         if (increment) {
@@ -88,6 +96,10 @@ const CartPage = () => {
                     Tổng Đơn Hàng: ${totalPrice}
                 </Typography>
             </Box>
+            <Button variant="contained" color="primary" onClick={handlePurchaseClick}>
+                Purchase
+            </Button>
+            {showOrderInfo && <OrderInfo />}
         </Box>
     );
 };

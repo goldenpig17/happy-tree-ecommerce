@@ -1,18 +1,21 @@
 // action types
+//filter Product actions
 export const SET_PRODUCT_NAME = 'SET_PRODUCT_NAME';
 export const SET_MAX_PRICE = 'SET_MAX_PRICE';
 export const SET_MIN_PRICE = 'SET_MIN_PRICE';
 export const SET_PRODUCT_TYPE = 'SET_PRODUCT_TYPE';
 export const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
-
 export const TOGGLE_PRODUCT_TYPE = 'TOGGLE_PRODUCT_TYPE';
-
+//fetch Product actions
 export const FETCH_PRODUCTS_START = 'FETCH_PRODUCTS_START';
 export const FETCH_PRODUCTS_SUCCESS = 'FETCH_PRODUCTS_SUCCESS';
 export const FETCH_PRODUCTS_FAILURE = 'FETCH_PRODUCTS_FAILURE';
+//show modal
+export const SHOW_MODAL = 'SHOW_MODAL';
+export const HIDE_MODAL = 'HIDE_MODAL';
+
 
 // action creators
-
 export const fetchProducts = () => async (dispatch) => {
     dispatch({ type: FETCH_PRODUCTS_START });
 
@@ -59,6 +62,7 @@ export const setCurrentPage = (page) => ({
     payload: page,
 });
 
+//ProductDetails API
 export const fetchProductDetails = (_id) => {
     return async (dispatch) => {
         try {
@@ -110,5 +114,98 @@ export const updateQuantity = (_id, increment) => {
         });
 
         localStorage.setItem('cart', JSON.stringify(updatedCart));
+    };
+};
+
+//orderDetail & order Actions
+export const confirmOrder = (orderInfo) => {
+    return async dispatch => {
+        try {
+            // First, create orderDetail
+            const orderDetailResponse = await fetch('http://localhost:8000/orderDetail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderInfo),
+            });
+            const orderDetailData = await orderDetailResponse.json();
+            const orderDetailId = orderDetailData.result._id; // Assuming the response contains the ID
+
+            // Then, create order
+            const orderResponse = await fetch('http://localhost:8000/order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    orderId: orderInfo._id,
+                    orderDate: orderInfo.orderDate,
+                    orderDetails: [orderDetailId],
+                    cost: orderInfo.total
+                }),
+            });
+            const orderData = await orderResponse.json();
+            const orderId = orderData.result._id; // Assuming the response contains the ID of the created order
+           // Return the order ID for further use
+            return { 
+                orderId: orderId,  // Giả sử _id là ID của order
+                orderDate: orderData.result.orderDate // Giả sử orderDate là ngày của order
+            };
+        } catch (error) {
+            console.error('Error during order processing:', error);
+            return null;
+        }
+    };
+};
+
+//modal Actions
+export const showModal = () => ({
+    type: SHOW_MODAL,
+});
+
+export const hideModal = () => ({
+    type: HIDE_MODAL,
+});
+
+//LogIn Actions
+export const loginUser = (userData) => {
+    return {
+        type: 'USER_LOGIN',
+        payload: userData
+    };
+};
+
+//createCustomer Action
+export const createCustomer = (customerData) => async (dispatch) => {
+    try {
+        const response = await fetch('http://localhost:8000/customer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(customerData),
+        });
+        const data = await response.json();
+        console.log("New customer created:", data);
+        // Check if the orders array is not empty
+        if (response.ok && data.result.orders && data.result.orders.length > 0) {
+            data.result.orders.forEach(order => {
+                console.log(order);
+            });
+        } else {
+            console.log("Không tìm thấy order của khách hàng này!");
+        }
+        if (!response.ok) {
+            throw new Error(data.message || "Có lỗi khi tạo khách hàng mới!");
+        }
+
+        // Return the response data for further processing in the component
+        return data;
+
+    } catch (error) {
+        console.error("Lỗi khi tạo khách hàng:", error);
+        throw error;
+    }
+};
+
+//cart actions
+export const clearCart = () => {
+    return {
+        type: 'CLEAR_CART'
     };
 };
