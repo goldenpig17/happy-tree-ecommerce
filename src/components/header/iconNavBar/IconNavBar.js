@@ -1,5 +1,5 @@
 import * as React from 'react';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import IconButton from '@mui/material/IconButton';
@@ -54,6 +54,10 @@ export default function IconNavBar() {
     const handleCart = () => {
         navigate("/cart");
     };
+
+    const handleAdmin = () => {
+        navigate("/admin");
+    };
     return (
         <div>
             <IconButton
@@ -63,10 +67,10 @@ export default function IconNavBar() {
                 aria-label="menu"
                 sx={{ mr: 2 }}
             >
-                <NotificationsIcon></NotificationsIcon>
+                <SummarizeIcon onClick={handleAdmin}/>
                 <AccountCircleIcon onClick={handleMenu}></AccountCircleIcon>
                 <Badge badgeContent={cartItemCount} color="secondary">
-                    <ShoppingCartIcon onClick={handleCart} />
+                    <ShoppingCartIcon onClick={handleCart}/>
                 </Badge>
             </IconButton>
             <Menu

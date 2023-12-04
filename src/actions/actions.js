@@ -181,18 +181,20 @@ export const createCustomer = (customerData) => async (dispatch) => {
             body: JSON.stringify(customerData),
         });
         const data = await response.json();
+         if (!response.ok) {
+            throw new Error(data.message || "Có lỗi khi tạo khách hàng mới!");
+        }
         console.log("New customer created:", data);
+    
         // Check if the orders array is not empty
-        if (response.ok && data.result.orders && data.result.orders.length > 0) {
-            data.result.orders.forEach(order => {
+        if (data.customer.orders && data.customer.orders) {
+            data.customer.orders.forEach(order => {
                 console.log(order);
             });
         } else {
             console.log("Không tìm thấy order của khách hàng này!");
         }
-        if (!response.ok) {
-            throw new Error(data.message || "Có lỗi khi tạo khách hàng mới!");
-        }
+       
 
         // Return the response data for further processing in the component
         return data;

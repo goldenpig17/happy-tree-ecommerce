@@ -2,10 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ProductItem = ({ name, imageUrl, description, category, buyPrice, _id }) => {
-    console.log(_id);
-    console.log(name);
     const navigate = useNavigate();
-
     const navigateToProductDetails = () => {
         // Prevent default anchor action
         navigate(`/products/${_id}`);

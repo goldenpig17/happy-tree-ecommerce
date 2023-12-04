@@ -11,7 +11,7 @@ import Header from './header/Header';
 export default function Products() {
     const dispatch = useDispatch();
     const { products, isLoading, error } = useSelector(state => state.products);
-
+    console.log(products);
     // Get filter and pagination states from Redux
     const { productName, minPrice, maxPrice, productType, currentPage } = useSelector(state => state.filter);
     const itemsPerPage = 10; // Number of items per page

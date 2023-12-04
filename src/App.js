@@ -5,6 +5,7 @@ import SignUp from "./components/SignUp";
 import Login from "./components/LogIn";
 import ProductInfo from "./components/ProductInfo";
 import CartPage from "./components/CartPage";
+import ManagementDashboard from "./components/adminPage/ManagementDashBoard";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/signup" element={<SignUp />}/>
           <Route path="/login" element={<Login />}/>
+          <Route path="/admin" element={<ManagementDashboard/>}/>
         </Routes>
       </div>
     </BrowserRouter>
