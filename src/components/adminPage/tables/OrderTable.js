@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField, Box, Typography } from '@mui/material';
+import { Card, CardContent, Grid, Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField, Box, Typography } from '@mui/material';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -125,9 +125,27 @@ const OrderTable = () => {
 
     // Hàm xử lý khi ấn nút Sửa và Xóa
     // Hàm để xử lý sự kiện khi nhấn nút Sửa
-    const handleEdit = (order) => {
-        setCurrentEditOrder(order);
-        setIsEditModalOpen(true);
+    const handleEdit = async (order) => {
+        console.log(order);
+        try {
+            const orderDetailsResponse = await fetch(`http://localhost:8000/orderDetail/${order.orderDetails}`);
+            const orderDetails = await orderDetailsResponse.json();
+            console.log(orderDetails);
+
+            const customerResponse = await fetch(`http://localhost:8000/customer/${order.customer}`);
+            const customer = await customerResponse.json();
+            console.log(customer);
+
+            setCurrentEditOrder({
+                ...order,
+                orderDetails: orderDetails.result || [],
+                customer: customer.result || []
+            });
+            setIsEditModalOpen(true);
+        } catch (error) {
+            console.error('Error fetching order details or customer:', error);
+            alert('Failed to fetch order details or customer');
+        }
     };
     //Hàm xử lý khi ấn nút Confirm trên Modal Sửa
     const handleUpdateConfirm = () => {
@@ -206,49 +224,120 @@ const OrderTable = () => {
             {/* Modal Thêm khách hàng*/}
 
             {/* Modal Sửa sản phẩm*/}
-            <Modal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-                <Box style={{ backgroundColor: 'white', padding: 20, margin: '20px auto', width: '50%' }}>
-                    <Typography variant="h5">Sửa Thông Tin Khách Hàng - ID: {currentEditOrder?._id}</Typography>
-                    <TextField
-                        label="Họ Tên"
-                        name="fullName"
-                        value={currentEditOrder?.fullName}
-                        onChange={e => setCurrentEditOrder({ ...currentEditOrder, fullName: e.target.value })}
-                        fullWidth margin="normal" />
-                    <TextField
-                        label="Số điện thoại"
-                        name="phone"
-                        value={currentEditOrder?.phone}
-                        onChange={e => setCurrentEditOrder({ ...currentEditOrder, phone: e.target.value })}
-                        fullWidth margin="normal" />
-                    <TextField
-                        label="Email"
-                        name="email"
-                        value={currentEditOrder?.email}
-                        onChange={e => setCurrentEditOrder({ ...currentEditOrder, email: e.target.value })}
-                        fullWidth margin="normal" />
-                    <TextField
-                        label="Địa chỉ"
-                        name="address"
-                        value={currentEditOrder?.address}
-                        onChange={e => setCurrentEditOrder({ ...currentEditOrder, address: e.target.value })}
-                        fullWidth margin="normal" />
-                    <TextField
-                        label="Thành phố"
-                        name="city"
-                        value={currentEditOrder?.city}
-                        onChange={e => setCurrentEditOrder({ ...currentEditOrder, city: e.target.value })}
-                        fullWidth margin="normal" />
-                    <TextField
-                        label="Quốc gia"
-                        name="country"
-                        value={currentEditOrder?.country}
-                        onChange={e => setCurrentEditOrder({ ...currentEditOrder, country: e.target.value })}
-                        fullWidth margin="normal" />
-                    <Button onClick={handleUpdateConfirm} color="primary">Cập Nhật</Button>
-                    <Button onClick={() => setIsEditModalOpen(false)} color="secondary">Hủy</Button>
-                </Box>
-            </Modal>
+            {currentEditOrder && (
+                <Modal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+                    <Box style={{ backgroundColor: 'white', padding: 20, margin: '20px auto', width: '50%' }}>
+                        <Typography variant="h5">Edit Order - ID: {currentEditOrder._id}</Typography>
+                        <Typography variant="h5">Order Date: {currentEditOrder.orderDate}</Typography>
+
+                        {/* Hiển thị thông tin chi tiết của OrderDetails */}
+                        <Grid container spacing={2}>
+                            {/* Phần Edit Product */}
+                            <Grid item xs={12} md={6}>
+                                <Card>
+                                    <CardContent>
+                                        <Typography variant="h6">Edit Product:</Typography>
+                                        {currentEditOrder.orderDetails.products.map((product, index) => (
+                                            <Box key={product._id} mb={2}>
+                                                <Typography variant="subtitle1">Product ID: {product.product}</Typography>
+                                                <TextField
+                                                    label="Quantity"
+                                                    type="number"
+                                                    value={product.quantity}
+                                                    onChange={(e) => {
+                                                        let newProducts = [...currentEditOrder.orderDetails.products];
+                                                        newProducts[index].quantity = e.target.value;
+                                                        setCurrentEditOrder({
+                                                            ...currentEditOrder,
+                                                            orderDetails: { ...currentEditOrder.orderDetails, products: newProducts }
+                                                        });
+                                                    }}
+                                                    margin="normal"
+                                                    fullWidth
+                                                />
+                                            </Box>
+                                        ))}
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+
+                            {/* Phần Customer Information */}
+                            <Grid item xs={12} md={6}>
+                                <Card>
+                                    <CardContent>
+                                        <Typography variant="subtitle1" style={{ marginTop: 20 }}>Customer Information</Typography>
+                                        <TextField
+                                            label="Full Name"
+                                            value={currentEditOrder.customer.fullName}
+                                            onChange={(e) => setCurrentEditOrder({
+                                                ...currentEditOrder,
+                                                customer: { ...currentEditOrder.customer, fullName: e.target.value }
+                                            })}
+                                            margin="normal"
+                                            fullWidth
+                                        />
+                                        <TextField
+                                            label="Phone"
+                                            value={currentEditOrder.customer.phone}
+                                            onChange={(e) => setCurrentEditOrder({
+                                                ...currentEditOrder,
+                                                customer: { ...currentEditOrder.customer, phone: e.target.value }
+                                            })}
+                                            margin="normal"
+                                            fullWidth
+                                        />
+                                        <TextField
+                                            label="Email"
+                                            value={currentEditOrder.customer.email}
+                                            onChange={(e) => setCurrentEditOrder({
+                                                ...currentEditOrder,
+                                                customer: { ...currentEditOrder.customer, email: e.target.value }
+                                            })}
+                                            margin="normal"
+                                            fullWidth
+                                        />
+                                        <TextField
+                                            label="Address"
+                                            value={currentEditOrder.customer.address}
+                                            onChange={(e) => setCurrentEditOrder({
+                                                ...currentEditOrder,
+                                                customer: { ...currentEditOrder.customer, address: e.target.value }
+                                            })}
+                                            margin="normal"
+                                            fullWidth
+                                        />
+                                        <TextField
+                                            label="City"
+                                            value={currentEditOrder.customer.city}
+                                            onChange={(e) => setCurrentEditOrder({
+                                                ...currentEditOrder,
+                                                customer: { ...currentEditOrder.customer, city: e.target.value }
+                                            })}
+                                            margin="normal"
+                                            fullWidth
+                                        />
+                                        <TextField
+                                            label="Country"
+                                            value={currentEditOrder.customer.country}
+                                            onChange={(e) => setCurrentEditOrder({
+                                                ...currentEditOrder,
+                                                customer: { ...currentEditOrder.customer, country: e.target.value }
+                                            })}
+                                            margin="normal"
+                                            fullWidth
+                                        />
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        </Grid>
+                        {/* Thêm các trường khác để hiển thị thông tin khách hàng */}
+                        <Box mt={3}>
+                            <Button onClick={handleUpdateConfirm} color="primary">Update</Button>
+                            <Button onClick={() => setIsEditModalOpen(false)} color="secondary">Cancel</Button>
+                        </Box>
+                    </Box>
+                </Modal>
+            )}
             {/* Thêm bộ lọc ngày */}
             <DatePicker
                 selected={filterDate}

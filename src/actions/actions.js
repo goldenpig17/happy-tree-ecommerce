@@ -142,11 +142,11 @@ export const confirmOrder = (orderInfo) => {
                 }),
             });
             const orderData = await orderResponse.json();
-            const orderId = orderData.result._id; // Assuming the response contains the ID of the created order
-           // Return the order ID for further use
-            return { 
+            const orderId = orderData.orderId; // Assuming the response contains the ID of the created order
+            // Return the order ID for further use
+            return {
                 orderId: orderId,  // Giả sử _id là ID của order
-                orderDate: orderData.result.orderDate // Giả sử orderDate là ngày của order
+                orderDate: orderData.order.orderDate // Giả sử orderDate là ngày của order
             };
         } catch (error) {
             console.error('Error during order processing:', error);
@@ -173,32 +173,39 @@ export const loginUser = (userData) => {
 };
 
 //createCustomer Action
-export const createCustomer = (customerData) => async (dispatch) => {
+export const createCustomer = (customerData, orderId) => async (dispatch) => {
     try {
-        const response = await fetch('http://localhost:8000/customer', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(customerData),
-        });
-        const data = await response.json();
-         if (!response.ok) {
-            throw new Error(data.message || "Có lỗi khi tạo khách hàng mới!");
-        }
-        console.log("New customer created:", data);
-    
-        // Check if the orders array is not empty
-        if (data.customer.orders && data.customer.orders) {
-            data.customer.orders.forEach(order => {
-                console.log(order);
+        let data;
+        // Nếu có orderId được truyền vào, gửi yêu cầu API riêng để cập nhật đơn hàng với customerId
+        if (orderId) {
+            const updateOrderResponse = await fetch(`http://localhost:8000/order/${orderId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ customerId: data.customerId }),
             });
+            const updateOrderData = await updateOrderResponse.json();
+
+            if (!updateOrderResponse.ok) {
+                throw new Error(updateOrderData.message || "Có lỗi khi cập nhật đơn hàng!");
+            }
+
+            console.log("Order updated with customerId:", updateOrderData);
         } else {
-            console.log("Không tìm thấy order của khách hàng này!");
+            // Nếu không có orderId, gửi yêu cầu API để tạo khách hàng mới
+            const response = await fetch('http://localhost:8000/customer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(customerData),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || "Có lỗi khi tạo khách hàng mới!");
+            }
+            console.log("Customer created/updated:", data);
+
+            // Return the response data for further processing in the component
+            return data;
         }
-       
-
-        // Return the response data for further processing in the component
-        return data;
-
     } catch (error) {
         console.error("Lỗi khi tạo khách hàng:", error);
         throw error;

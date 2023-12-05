@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField, Box, Typography } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { createCustomer } from "../../../actions/actions";
 
 const CustomerTable = () => {
     const [customers, setCustomers] = useState([]);
@@ -19,6 +21,8 @@ const CustomerTable = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [currentEditCustomer, setCurrentEditCustomer] = useState(null);
 
+    const dispatch = useDispatch();
+
     // Hàm xử lý thay đổi trên các trường input
     const handleInputChange = (event) => {
         setCustomerFormData({ ...customerFormData, [event.target.name]: event.target.value });
@@ -28,45 +32,54 @@ const CustomerTable = () => {
         setIsModalOpen(true);
     };
     //Hàm xử lý khi ấn Confirm trên Modal
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         // Đảm bảo tất cả trường thông tin đã được nhập
         if (Object.values(customerFormData).some(field => field === '')) {
             alert('Vui lòng nhập tất cả thông tin khách hàng');
             return;
         }
 
-        // Gửi yêu cầu tới API để tạo khách hàng
-        fetch('http://localhost:8000/customer', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(customerFormData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message || 'Có lỗi xảy ra khi thêm khách hàng');
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Xử lý phản hồi từ server
-                alert(data.message);
-                setIsModalOpen(false);
-                // Cập nhật lại danh sách khách hàng
-                fetchCustomers();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert(error.message);
+        try {
+            // Tạo một object chứa thông tin khách hàng từ customerFormData
+            const customerData = {
+                fullName: customerFormData.fullName,
+                phone: customerFormData.phone,
+                email: customerFormData.email,
+                address: customerFormData.address,
+                city: customerFormData.city,
+                country: customerFormData.country,
+            };
+
+            // Gửi yêu cầu POST tới API để tạo khách hàng
+            const response = await fetch('http://localhost:8000/customer/customerTable', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(customerData),
             });
-    }
+
+            if (response.ok) {
+                // Nếu request thành công
+                alert('Customer created successfully');
+                fetchCustomers(); // Gọi hàm fetchCustomers để cập nhật danh sách khách hàng
+            } else {
+                // Nếu có lỗi trong request
+                const errorData = await response.json();
+                console.error('Error:', errorData.message);
+                alert(errorData.message || 'Có lỗi xảy ra khi tạo khách hàng');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message || 'Có lỗi xảy ra khi tạo khách hàng');
+        }
+    };
+
 
     const fetchCustomers = async () => {
         // API call to fetch customers
         const response = await fetch("http://localhost:8000/customer");
         const data = await response.json();
-        console.log(data);
         setCustomers(data.result);
         setFilteredCustomers(data.result);
     };
@@ -123,46 +136,52 @@ const CustomerTable = () => {
     //Hàm xử lý khi ấn nút Xóa
     // Hàm để xử lý sự kiện khi nhấn nút Xóa
     const handleDelete = (customerId) => {
-        // Kiểm tra xem khách hàng có order nào không
-        fetch(`http://localhost:8000/order/${customerId}/orders`)
+        // Gửi yêu cầu để kiểm tra đơn hàng của khách hàng
+        fetch(`http://localhost:8000/order/customer?customerId=${customerId}`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Không thể kiểm tra order của khách hàng');
+                    throw new Error('Không thể kiểm tra đơn hàng của khách hàng');
                 }
                 return response.json();
             })
             .then(data => {
-                console.log(data);
-                // Nếu khách hàng có order, thông báo không thể xóa
-                if (data.customer.orders && data.customer.orders.length > 0) {
-                    alert('Khách hàng này có các order liên quan, không thể xóa!');
+                // Nếu có đơn hàng chứa customerId tương ứng, thông báo không thể xóa
+                if (data.message === 'Khách hàng này có các đơn hàng liên quan, không thể xóa!') {
+                    alert(data.message);
                 } else {
-                    // Nếu không có order, hỏi xác nhận trước khi xóa
+                    // Nếu không có đơn hàng nào chứa customerId tương ứng, hỏi xác nhận trước khi xóa
                     if (window.confirm("Bạn có chắc chắn muốn xóa khách hàng này không?")) {
-                        return fetch(`http://localhost:8000/customer/${customerId}`, {
+                        // Gửi yêu cầu để xóa khách hàng
+                        fetch(`http://localhost:8000/customer/${customerId}`, {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' },
-                        });
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Có lỗi xảy ra khi xóa khách hàng');
+                                }
+                                return response.json();
+                            })
+                            .then(() => {
+                                alert('Khách hàng đã được xóa thành công');
+                                fetchCustomers();
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert(error.message);
+                            });
                     } else {
                         throw new Error('Hủy bỏ thao tác xóa');
                     }
                 }
-            })
-            .then(response => {
-                if (response && !response.ok) {
-                    throw new Error('Có lỗi xảy ra khi xóa khách hàng');
-                }
-                return response.json();
-            })
-            .then(() => {
-                alert('Khách hàng đã được xóa thành công');
-                fetchCustomers();
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert(error.message);
             });
     };
+
+
     return (
         <div>
             {/* Nút mở Modal */}
@@ -184,7 +203,7 @@ const CustomerTable = () => {
                     <Button onClick={() => setIsModalOpen(false)} color="secondary">Hủy</Button>
                 </Box>
             </Modal>
-            {/* Modal Sửa sản phẩm*/}
+            {/* Modal Sửa Khách hàng*/}
             <Modal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
                 <Box style={{ backgroundColor: 'white', padding: 20, margin: '20px auto', width: '50%' }}>
                     <Typography variant="h5">Sửa Thông Tin Khách Hàng - ID: {currentEditCustomer?._id}</Typography>
@@ -246,7 +265,6 @@ const CustomerTable = () => {
                 <TableHead>
                     <TableRow>
                         <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>ID</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Order ID</TableCell>
                         <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Họ tên</TableCell>
                         <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Email</TableCell>
                         <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Số điện thoại</TableCell>
@@ -257,30 +275,27 @@ const CustomerTable = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {filteredCustomers.map(customer => (
-                        <TableRow key={customer._id}>
-                            <TableCell>{customer._id}</TableCell>
-                            <TableCell>
-                                {customer.orders && Array.isArray(customer.orders) ? (
-                                    customer.orders.map((orderId, index) => (
-                                        <div key={`${orderId}-${index}`}>{orderId}</div>
-                                    ))
-                                ) : (
-                                    <div>Không có Order</div>
-                                )}
-                            </TableCell>
-                            <TableCell>{customer.fullName}</TableCell>
-                            <TableCell>{customer.email}</TableCell>
-                            <TableCell>{customer.phone}</TableCell>
-                            <TableCell>{customer.address}</TableCell>
-                            <TableCell>{customer.city}</TableCell>
-                            <TableCell>{customer.country}</TableCell>
-                            <TableCell>
-                                <Button onClick={() => handleEdit(customer)} style={{ backgroundColor: 'green', color: 'white', borderRadius: '5px' }}>Sửa</Button>
-                                <Button onClick={() => handleDelete(customer._id)} style={{ backgroundColor: 'red', color: 'white', borderRadius: '5px' }}>Xóa</Button>
-                            </TableCell>
+                    {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? (
+                        filteredCustomers.map(customer => (
+                            <TableRow key={customer._id}>
+                                <TableCell>{customer._id}</TableCell>
+                                <TableCell>{customer.fullName}</TableCell>
+                                <TableCell>{customer.email}</TableCell>
+                                <TableCell>{customer.phone}</TableCell>
+                                <TableCell>{customer.address}</TableCell>
+                                <TableCell>{customer.city}</TableCell>
+                                <TableCell>{customer.country}</TableCell>
+                                <TableCell>
+                                    <Button onClick={() => handleEdit(customer)} style={{ backgroundColor: 'green', color: 'white', borderRadius: '5px' }}>Sửa</Button>
+                                    <Button onClick={() => handleDelete(customer._id)} style={{ backgroundColor: 'red', color: 'white', borderRadius: '5px' }}>Xóa</Button>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={9}>No customers found.</TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
             </Table>
         </div>
