@@ -10,13 +10,13 @@ import "./customCarousel.css";
 export default function CarouselSlider() {
     return (
         <>
+        <div className="carousel-container">
             <Carousel data-bs-theme="dark">
                 <Carousel.Item >
                     <div className="carousel-caption-container">
                         <Carousel.Caption>
                             <h5>BLUE DREAM</h5>
                             <p>Blue Dream is a sativa-dominant hybrid marijuana strain made by crossing Blueberry with Haze.</p>
-                            <a href='!' className="text-uppercase custom_orange-btn text-center">Shop Now</a>
                         </Carousel.Caption>
                     </div>
                     <div className="carousel-image-container">
@@ -31,8 +31,7 @@ export default function CarouselSlider() {
                     <div className="carousel-caption-container">
                         <Carousel.Caption>
                             <h5>GELATO</h5>
-                            <p>Gelato, also known as Larry Bird and Gelato #42 is an evenly-balanced hybrid marijuana strain made from a crossing of Sunset Sherbet and Thin Mint Girl Scout Cookies. With its balance of indica & sativa, this strain produces a euphoric high accompanied by strong feelings of relaxation.</p>
-                            <a href='!' className="text-uppercase custom_orange-btn text-center">Shop Now</a>
+                            <p>Gelato produces a euphoric high accompanied by strong feelings of relaxation.</p>
                         </Carousel.Caption>
                     </div>
                     <div className="carousel-image-container">
@@ -47,8 +46,7 @@ export default function CarouselSlider() {
                     <div className="carousel-caption-container">
                         <Carousel.Caption>
                             <h5>OG KUSH</h5>
-                            <p> OG Kush, also known as Premium OG Kush, was first cultivated in Florida in the early ‘90s when a marijuana strain from Northern California was supposedly crossed with Chemdawg, Lemon Thai and a Hindu Kush plant from Amsterdam.</p>
-                            <a href='!' className="text-uppercase custom_orange-btn text-center">Shop Now</a>
+                            <p> OG Kush was first cultivated in Florida in the early 90s.</p>                   
                         </Carousel.Caption>
                     </div>
                     <div className="carousel-image-container">
@@ -60,6 +58,8 @@ export default function CarouselSlider() {
                     </div>
                 </Carousel.Item>
             </Carousel>
+        </div>
+            
         </>
     )
 }

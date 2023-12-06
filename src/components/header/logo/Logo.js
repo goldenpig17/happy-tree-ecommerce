@@ -1,7 +1,6 @@
 import * as React from 'react';
-import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
-
+import logoImage from "./images/logoNoBackground.png";
 
 export default function Logo() {
   const navigate = useNavigate();
@@ -10,10 +9,19 @@ export default function Logo() {
     navigate("/");
   }
   return (
-   
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} style={{color: "black"}} onClick={handleLogoClick}>
-            Devcamp
-          </Typography>
+
+    <img
+      src={logoImage}
+      alt="Happy Tree Logo"
+      style={{
+        cursor: 'pointer',
+        height: '150px', // Đặt chiều cao cho logo
+        width: 'auto',  // Chiều rộng tự động điều chỉnh theo tỉ lệ
+        marginTop: '5px', // Có thể thêm margin nếu cần
+        marginBottom: '5px'
+      }} 
+      onClick={handleLogoClick}
+    />
 
   );
 }

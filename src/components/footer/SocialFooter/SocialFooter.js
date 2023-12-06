@@ -5,15 +5,14 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import IconButton from '@mui/material/IconButton';
+import Logo from '../../header/logo/Logo';
 
 export default function SocialFooter() {
     return (
         <>
             <div className="col-md-3">
                 <div className="social_container">
-                    <h5>
-                        DevCamp
-                    </h5>
+                    <Logo></Logo>
                     <IconButton
                         size="large"
                         edge="start"

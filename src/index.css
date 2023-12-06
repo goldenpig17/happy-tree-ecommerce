@@ -1,13 +1,15 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+body, button, input, textarea, select {
+  font-family: 'Happy Monkey', sans-serif;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+body {
+  background-image: url('./assets/images/backgroundImage.webp');
+  background-size: cover; /* Đảm bảo hình nền phủ kín màn hình */
+  background-repeat: no-repeat; /* Ngăn không cho hình nền lặp lại */
+  background-attachment: fixed; /* Giữ hình nền cố định khi cuộn */
 }

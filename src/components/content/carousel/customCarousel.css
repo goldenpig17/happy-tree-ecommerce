@@ -7,29 +7,55 @@
 }
 
 .carousel-image-container {
-    flex: 0 0 auto; /* Cho phép container tự điều chỉnh kích thước dựa trên nội dung bên trong */
-    text-align: center; /* Căn giữa ảnh */
+    flex: 0 0 auto;
+    /* Cho phép container tự điều chỉnh kích thước dựa trên nội dung bên trong */
+    text-align: center;
+    /* Căn giữa ảnh */
 }
 
 .carousel-image {
-    max-width: 20%; /* Giảm kích thước của ảnh */
-    height: auto; /* Đảm bảo tỷ lệ của ảnh */
+    max-width: 20%;
+    /* Giảm kích thước của ảnh */
+    height: auto;
+    /* Đảm bảo tỷ lệ của ảnh */
 }
 
 .carousel-caption-container {
-    flex: 0 0 50%; /* Giảm chiều rộng container xuống còn 50% và không cho phép co giãn */
+    flex: 0 0 50%;
+    /* Giảm chiều rộng container xuống còn 50% và không cho phép co giãn */
     display: flex;
-    justify-content: flex-start; /* Căn nội dung bên trái container */
+    justify-content: flex-start;
+    /* Căn nội dung bên trái container */
     align-items: center;
-    padding-left: 15px; /* Đệm bên trái */
-    text-align: left; /* Căn nội dung caption bên trái */
+    padding-left: 15px;
+    /* Đệm bên trái */
+    text-align: left;
+    /* Căn nội dung caption bên trái */
 }
 
 .carousel-caption {
-    text-align: left; /* Căn nội dung caption bên trái */
-    background-color: rgba(255, 255, 255, 0.8); /* Màu nền và độ trong suốt */
-    border-radius: 5px; /* Góc bo tròn */
-    padding: 10px; /* Đệm xung quanh nội dung */
-    max-width: 100%; /* Giới hạn chiều rộng tối đa */
-    width: 100%; /* Đảm bảo nội dung trải đều theo chiều rộng của container */
+    text-align: left;
+    /* Căn nội dung caption bên trái */
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Màu nền và độ trong suốt */
+    border-radius: 5px;
+    /* Góc bo tròn */
+    padding: 10px;
+    /* Đệm xung quanh nội dung */
+    max-width: 100%;
+    /* Giới hạn chiều rộng tối đa */
+    width: 100%;
+    /* Đảm bảo nội dung trải đều theo chiều rộng của container */
+}
+
+.carousel-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1300px;
+    height: auto;
+    background-color: white; /* Thêm dòng này để đặt màu nền là trắng */
 }

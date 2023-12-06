@@ -11,6 +11,10 @@ const cartReducer = (state = initialState, action) => {
                 (total, item) => total + item.price * item.quantity,
                 0
             ).toFixed(2);
+
+            // Cập nhật localStorage với giỏ hàng mới
+            localStorage.setItem('cart', JSON.stringify(updatedItems));
+
             return {
                 ...state,
                 items: updatedItems,
@@ -23,7 +27,8 @@ const cartReducer = (state = initialState, action) => {
             };
         case 'CLEAR_CART':
             return {
-                ...initialState
+                ...initialState,
+                items: []
             };
         default:
             return state;

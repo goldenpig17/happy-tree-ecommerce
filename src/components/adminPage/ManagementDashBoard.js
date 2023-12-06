@@ -3,13 +3,27 @@ import { Typography, Box } from '@mui/material';
 import ProductTable from './tables/ProductTable';
 import CustomerTable from './tables/CustomerTable';
 import OrderTable from './tables/OrderTable';
+import BreadCrumb from '../breadcrumbs/BreadCrumb';
 
 
 const ManagementDashboard = () => {
     const [activeTable, setActiveTable] = useState('products'); // products, customers, orders
 
+    //BreadCrumb
+    const breadcrumbs = [
+        {
+            name: "Trang chủ",
+            url: "/"
+        },
+        {
+            name: "Management Dashboard",
+            url: "/admin"
+        }
+    ];
+
     return (
         <div>
+            <BreadCrumb breadcrumbs={breadcrumbs} />
             {/* Tiêu đề */}
             <Typography variant="h3" align="center" style={{ margin: '20px 0', fontWeight: 'bold' }}>
                 Dashboard Quản Lý

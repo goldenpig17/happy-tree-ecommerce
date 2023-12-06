@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Button, TextField, Grid, Link, Paper, Typography } from '@mui/material';
+import BreadCrumb from './breadcrumbs/BreadCrumb';
 
 export default function SignUp() {
   const [username, setUsername] = React.useState('');
@@ -32,8 +33,17 @@ export default function SignUp() {
     });
   };
 
+    //BreadCrumb
+    const breadcrumbs = [
+      {
+          name: "Trang chủ",
+          url: "/"
+      }
+  ];
+
   return (
     <Paper style={{ padding: 20, maxWidth: 300, margin: "0 auto" }}>
+      <BreadCrumb breadcrumbs={breadcrumbs} />
       <Typography variant="h5" style={{ marginBottom: 20 }}>Sign Up</Typography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2} direction="column">

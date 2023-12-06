@@ -18,11 +18,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import OrderInfo from './orders/OrderInfo';
+import BreadCrumb from './breadcrumbs/BreadCrumb';
 
 const CartPage = () => {
     const dispatch = useDispatch();
     const cart = useSelector(state => state.cart.items);
-
+    console.log(cart);
     const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
 
     const [showOrderInfo, setShowOrderInfo] = useState(false);
@@ -50,20 +51,46 @@ const CartPage = () => {
         localStorage.setItem('cart', JSON.stringify(updatedCart));
     };
 
+    const handleCancel = () => {
+        setShowOrderInfo(false); // Đặt lại trạng thái để ẩn OrderInfo
+    };
+
+    //BreadCrumb
+    const breadcrumbs = [
+        {
+            name: "Trang chủ",
+            url: "/"
+        },
+        {
+            name: "Danh sách sản phẩm",
+            url: "/products"
+        }
+    ];
+
+    // Font Style
+    const customFontStyle = {
+        fontFamily: "'Happy Monkey', sans-serif",
+    };
+
     return (
         <Box sx={{ padding: 2 }}>
-            <Typography variant="h4" gutterBottom>
-                Giỏ Hàng
-            </Typography>
+            <BreadCrumb breadcrumbs={breadcrumbs} />
+            <Box sx={{ marginBottom: 3 }}>
+                <Paper sx={{ padding: 2, backgroundColor: '#fef7d0', boxShadow: 3 }}>
+                    <Typography variant="h3" gutterBottom component="div" sx={{ ...customFontStyle, fontWeight: 'bold', textAlign: 'center' }}>
+                        Giỏ Hàng
+                    </Typography>
+                </Paper>
+            </Box>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Product</TableCell>
-                            <TableCell align="right">Price</TableCell>
-                            <TableCell align="right">Quantity</TableCell>
-                            <TableCell align="right">Total</TableCell>
-                            <TableCell align="right">Remove</TableCell>
+                            <TableCell style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Sản phẩm</TableCell>
+                            <TableCell align="right" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Giá</TableCell>
+                            <TableCell align="right" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Số lượng</TableCell>
+                            <TableCell align="right" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Tổng giá</TableCell>
+                            <TableCell align="right" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Xóa</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -92,14 +119,18 @@ const CartPage = () => {
                 </Table>
             </TableContainer>
             <Box display="flex" justifyContent="flex-end" m={2}>
-                <Typography variant="h6">
-                    Tổng Đơn Hàng: ${totalPrice}
-                </Typography>
+                <Paper sx={{ padding: 2, backgroundColor: '#fef7d0', boxShadow: 3 }}>
+                    <Typography variant="h6" gutterBottom component="div" sx={{ ...customFontStyle }}>
+                        Tổng Đơn Hàng: ${totalPrice}
+                    </Typography>
+                </Paper>
             </Box>
-            <Button variant="contained" color="primary" onClick={handlePurchaseClick}>
-                Purchase
-            </Button>
-            {showOrderInfo && <OrderInfo />}
+            <Box display="flex" justifyContent="flex-end" m={2}>
+                <Button variant="contained" color="primary" onClick={handlePurchaseClick} sx={{ padding: 2, boxShadow: 3 }}>
+                    Xác nhận giỏ hàng
+                </Button>
+            </Box>
+            {showOrderInfo && <OrderInfo onCancel={handleCancel} />}
         </Box>
     );
 };

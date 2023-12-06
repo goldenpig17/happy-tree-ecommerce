@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductDetails } from '../actions/actions';
 import LatestProducts from './content/lastestProducts/LatestProducts';
 import ViewAll from './content/viewAll/viewAll';
+import { Paper, Box } from '@mui/material';
 
 const ProductInfo = ({ name, buyPrice }) => {
     const { _id } = useParams();
@@ -47,8 +48,8 @@ const ProductInfo = ({ name, buyPrice }) => {
             // If the product doesn't exist, add it to the cart with quantity 1
             const productToAdd = {
                 id: _id,
-                name: name,
-                price: buyPrice,
+                name: productDetails.data.name,
+                price: productDetails.data.buyPrice,
                 quantity: 1
             };
             cart.push(productToAdd);
@@ -78,31 +79,41 @@ const ProductInfo = ({ name, buyPrice }) => {
     return (
         <>
             <Header />
-            <BreadCrumb breadcrumbs={breadcrumbs} />
-            <h1 style={{ textAlign: 'center' }}>Thông tin chi tiết</h1>
-            <div className="product-info-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <div className="product-image" style={{ flex: 1 }}>
-                    <img
-                        src={productDetails.data.imageUrl}
-                        alt={productDetails.data.name}
-                        style={{ width: '100%', height: 'auto' }}
-                    />
-                </div>
-                <div className="product-details" style={{ flex: 3 }}>
-                    <h1>{productDetails.data.name}</h1>
-                    <p>Giá: ${productDetails.data.buyPrice}</p>
-                    <p>Loại: {productDetails.data.category}</p>
-                    <div>
-                        <button onClick={decrementQuantity}>-</button>
-                        <span>{quantity}</span>
-                        <button onClick={incrementQuantity}>+</button>
+            <Box sx={{ padding: 0.2 }}>
+                <Paper elevation={1} sx={{ padding: 0.1, margin: 1 }}>
+                    <BreadCrumb breadcrumbs={breadcrumbs} />
+                </Paper>
+            </Box>
+            <Box sx={{ padding: 2 }}>
+                <Paper elevation={3} sx={{ padding: 3, margin: 2, backgroundColor: '#fef7d0' }}>
+                    <h1 style={{ textAlign: 'center' }}>Thông tin chi tiết</h1>
+                    <div className="product-info-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <div className="product-image" style={{ flex: 1 }}>
+                            <img
+                                src={productDetails.data.imageUrl}
+                                alt={productDetails.data.name}
+                                style={{ width: '100%', height: 'auto' }}
+                            />
+                        </div>
+                        <div className="product-details" style={{ flex: 3 }}>
+                            <h1>{productDetails.data.name}</h1>
+                            <p>Giá: ${productDetails.data.buyPrice}</p>
+                            <p>Loại: {productDetails.data.category}</p>
+                            <div>
+                                <button onClick={decrementQuantity}>-</button>
+                                <span>{quantity}</span>
+                                <button onClick={incrementQuantity}>+</button>
+                            </div>
+                            <button type="button" className="btn btn-primary" onClick={addToCart}>Thêm vào giỏ</button>
+                        </div>
                     </div>
-                    <button type="button" className="btn btn-primary" onClick={addToCart}>Thêm vào giỏ</button>
-                </div>
-            </div>
-            <h3>Thông tin mô tả</h3>
-            <p>{productDetails.data.description}</p>
-            <h3>Sản phẩm liên quan</h3>
+                    <br/>
+                    <h3>Thông tin mô tả</h3>
+                    <p>{productDetails.data.description}</p>
+                    <br/>
+                    <h3>Sản phẩm liên quan</h3>
+                </Paper>
+            </Box>
             <LatestProducts />
             <ViewAll />
             <Footer />

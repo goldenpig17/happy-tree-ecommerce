@@ -3,6 +3,7 @@ import SummarizeIcon from '@mui/icons-material/Summarize';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { Menu, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Badge from '@mui/material/Badge';
@@ -11,6 +12,7 @@ import { useEffect } from 'react';
 export default function IconNavBar() {
     const [cartItemCount, setCartItemCount] = React.useState(0);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Trạng thái đăng nhập
     const navigate = useNavigate();
 
     // Retrieve the cart data from local storage
@@ -21,15 +23,28 @@ export default function IconNavBar() {
 
     useEffect(() => {
         updateCartCount();
-
-        // Custom event listener for cart updates
+        // Xử lý sự kiện cập nhật số lượng trên icon giỏ hàng
         window.addEventListener('cartUpdated', updateCartCount);
 
-        // Clean up the event listener
+        // Kiểm tra trạng thái đăng nhập từ sessionStorage
+        const loggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+        setIsLoggedIn(loggedIn);
+
+        // Xóa số trên icon giỏ hàng
         return () => {
             window.removeEventListener('cartUpdated', updateCartCount);
         };
     }, []);
+
+    // Hàm xử lý đăng xuất
+    const handleLogout = () => {
+        sessionStorage.removeItem('isLoggedIn'); // Xóa trạng thái đăng nhập khỏi sessionStorage
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('refreshToken');
+        setIsLoggedIn(false); // Cập nhật trạng thái đăng nhập
+        navigate("/"); // Chuyển hướng về trang chủ hoặc trang đăng nhập
+        handleClose();
+    };
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -65,13 +80,25 @@ export default function IconNavBar() {
                 edge="start"
                 color="black"
                 aria-label="menu"
-                sx={{ mr: 2 }}
+                sx={{
+                    mr: 2,
+                    fontSize: '3rem',
+                    '& .MuiSvgIcon-root': {
+                        fontSize: '3rem'
+                    }
+                }}
             >
-                <SummarizeIcon onClick={handleAdmin}/>
-                <AccountCircleIcon onClick={handleMenu}></AccountCircleIcon>
-                <Badge badgeContent={cartItemCount} color="secondary">
-                    <ShoppingCartIcon onClick={handleCart}/>
-                </Badge>
+                <Tooltip title="Management Dashboard">
+                    <SummarizeIcon onClick={handleAdmin} />
+                </Tooltip>
+                <Tooltip title="Account">
+                    <AccountCircleIcon onClick={handleMenu} />
+                </Tooltip>
+                <Tooltip title="Cart">
+                    <Badge badgeContent={cartItemCount} color="secondary">
+                        <ShoppingCartIcon onClick={handleCart} />
+                    </Badge>
+                </Tooltip>
             </IconButton>
             <Menu
                 id="menu-appbar"
@@ -88,8 +115,14 @@ export default function IconNavBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleSignUp}>Sign Up</MenuItem>
-                <MenuItem onClick={handleLogin}>Login</MenuItem>
+                {isLoggedIn ? (
+                    <MenuItem onClick={handleLogout}>Log Out</MenuItem>
+                ) : (
+                    <>
+                        <MenuItem onClick={handleSignUp}>Sign Up</MenuItem>
+                        <MenuItem onClick={handleLogin}>Login</MenuItem>
+                    </>
+                )}
             </Menu>
         </div>
 

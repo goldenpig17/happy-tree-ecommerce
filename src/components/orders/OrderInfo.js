@@ -1,21 +1,21 @@
 import { useSelector, useDispatch } from 'react-redux';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clearCart, confirmOrder, createCustomer, hideModal, loginUser, showModal } from '../../actions/actions';
-import { Button, Modal, TextField, Box } from '@mui/material';
+import { Button, Modal, TextField, Box, Paper, Typography } from '@mui/material';
 
 const modalStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400, // Hoặc bất kỳ độ rộng nào bạn muốn
+    width: 400,
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4, // Padding
 };
 
-const OrderInfo = () => {
+const OrderInfo = ({ onCancel }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const cart = useSelector(state => state.cart);
@@ -35,33 +35,37 @@ const OrderInfo = () => {
 
 
     //Hàm xử lý nút trên bảng
-    const handleCancel = () => {/* Logic to handle cancellation */ };
+    const handleCancel = () => { if (onCancel) onCancel(); };
     const handleConfirm = () => {
+        // Kiểm tra nếu giỏ hàng rỗng
+        if (cart.items.length === 0) {
+            alert("Giỏ hàng rỗng!");
+            return; // Thoát khỏi hàm nếu giỏ hàng không có sản phẩm
+        }
+
         const orderDetails = {
             products: cart.items.map(item => ({
-                product: item.id, // Assuming each item has a productId field
+                product: item.id,
                 quantity: item.quantity
             })),
             totalQuantity: cart.items.reduce((total, item) => total + item.quantity, 0),
-            total: cart.total // Pass the total cost from the cart
+            total: cart.total
         };
-        console.log(orderDetails);
         dispatch(confirmOrder(orderDetails))
             .then(response => {
-                // Assuming you have a state in the Redux store to track user login status
                 if (!user.isLoggedIn) {
-                    alert(`You are not logged in!`);
+                    alert(`Bạn chưa đăng nhập!`);
                     navigate('/login');
                     return;
                 } else {
-                    // Additional logic for logged-in users
                     setOrderConfirmation({ orderId: response.orderId, orderDate: response.orderDate });
                     dispatch(showModal());
                     dispatch(loginUser(user));
                 }
             })
             .catch((error) => {
-                // Handle any errors from the confirmOrder action
+                console.error('Error:', error);
+                alert(error.message);
             });
     };
     //Hàm xử lý đóng Modal
@@ -93,6 +97,7 @@ const OrderInfo = () => {
                 // Display a success message
                 alert("Customer created successfully");;
                 dispatch(clearCart());
+                localStorage.removeItem('cart');
                 dispatch(hideModal());
             })
             .catch(error => {
@@ -102,38 +107,51 @@ const OrderInfo = () => {
             });
     };
 
+    useEffect(() => {
+        console.log("Cart updated:", cart);
+    }, [cart]);
+
+    // Font Style
+    const customFontStyle = {
+        fontFamily: "'Happy Monkey', sans-serif",
+    };
+
     return (
         <div>
-            <h2>Confirm Order</h2>
-            {cart.items.map(item => (
-                <div key={item.id}>{item.name} - {item.quantity}</div>
-            ))}
-            <div>Total: {cart.total}</div>
-            <Button onClick={handleConfirm}>Confirm</Button>
-            <Button onClick={handleCancel}>Cancel</Button>
-            <div>
-                {isModalVisible && (
-                    <Modal
-                        open={isModalVisible}
-                        onClose={handleCloseModal}
-                    >
-                        <Box sx={modalStyle}>
-                            <h2>Nhập thông tin giao hàng</h2>
-                            <div>Order ID: {orderConfirmation.orderId}</div>
-                            <div>Order Date: {orderConfirmation.orderDate}</div>
-                            <TextField label="Full Name" name="fullName" onChange={handleInputChange} value={customerInfo.fullName} />
-                            <TextField label="Phone" name="phone" onChange={handleInputChange} value={customerInfo.phone} />
-                            <TextField label="Email" name="email" onChange={handleInputChange} value={customerInfo.email} />
-                            <TextField label="Address" name="address" onChange={handleInputChange} value={customerInfo.address} />
-                            <TextField label="City" name="city" onChange={handleInputChange} value={customerInfo.city} />
-                            <TextField label="Country" name="country" onChange={handleInputChange} value={customerInfo.country} />
-                            <br></br>
-                            <Button onClick={handleModalConfirm}>Confirm</Button>
-                            <Button>Cancel</Button>
-                        </Box>
-                    </Modal>
-                )}
-            </div>
+            <Box display="flex" justifyContent="flex-end" m={2}>
+                <Paper sx={{ padding: 2, backgroundColor: '#fef7d0', boxShadow: 3 }}>
+                    <Typography sx={{ ...customFontStyle, fontWeight: 'bold', fontSize: '2rem' }}>Xác nhận đơn hàng</Typography>
+                    {cart.items.map(item => (
+                        <div key={item.id}>{item.name} - {item.quantity}</div>
+                    ))}
+                    <div style={{ fontWeight: 'bold', fontSize: '1.4rem' }}>Total: {cart.total}</div>
+                    <Button variant="outlined" color="primary" onClick={handleConfirm} >Xác nhận</Button>
+                    <Button variant="outlined" color="warning" onClick={handleCancel}>Hủy</Button>
+                    <div>
+                        {isModalVisible && (
+                            <Modal
+                                open={isModalVisible}
+                                onClose={handleCloseModal}
+                            >
+                                <Box sx={modalStyle}>
+                                    <h2>Nhập thông tin giao hàng</h2>
+                                    <div>Order ID: {orderConfirmation.orderId}</div>
+                                    <div>Order Date: {orderConfirmation.orderDate}</div>
+                                    <TextField label="Full Name" name="fullName" onChange={handleInputChange} value={customerInfo.fullName} />
+                                    <TextField label="Phone" name="phone" onChange={handleInputChange} value={customerInfo.phone} />
+                                    <TextField label="Email" name="email" onChange={handleInputChange} value={customerInfo.email} />
+                                    <TextField label="Address" name="address" onChange={handleInputChange} value={customerInfo.address} />
+                                    <TextField label="City" name="city" onChange={handleInputChange} value={customerInfo.city} />
+                                    <TextField label="Country" name="country" onChange={handleInputChange} value={customerInfo.country} />
+                                    <br></br>
+                                    <Button onClick={handleModalConfirm}>Xác nhận mua hàng</Button>
+                                    <Button>Hủy mua hàng</Button>
+                                </Box>
+                            </Modal>
+                        )}
+                    </div>
+                </Paper>
+            </Box>
         </div>
     );
 };
