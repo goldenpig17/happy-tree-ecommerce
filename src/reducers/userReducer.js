@@ -1,13 +1,13 @@
 const initialState = {
-    isLoggedIn: !!sessionStorage.getItem('token'), // Check if token exists in session storage
-    token: sessionStorage.getItem('token') || null, // Get token from session storage or set to null
-    userDetails: {} // additional user details
+    isLoggedIn: !!sessionStorage.getItem('token'), // Kiểm tra xem có token trong storage không
+    token: sessionStorage.getItem('token') || null, //Lấy token từ sessionStorage 
+    userDetails: {} 
 };
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'USER_LOGIN':
-            sessionStorage.setItem('token', action.payload.token); // Store token in session storage
+            sessionStorage.setItem('token', action.payload.token); // Lưu token vào sessionStorage
             return {
                 ...state,
                 isLoggedIn: true,
@@ -15,14 +15,13 @@ const userReducer = (state = initialState, action) => {
                 userDetails: action.payload.userDetails
             };
         case 'USER_LOGOUT':
-            sessionStorage.removeItem('token'); // Remove token from session storage
+            sessionStorage.removeItem('token'); // Xóa token khỏi sessionStorage
             return {
                 ...state,
                 isLoggedIn: false,
                 token: null,
                 userDetails: {}
             };
-        // Handle other actions as needed
         default:
             return state;
     }

@@ -31,6 +31,7 @@
     /* Đệm bên trái */
     text-align: left;
     /* Căn nội dung caption bên trái */
+    font-family: 'Happy Monkey', sans-serif;
 }
 
 .carousel-caption {
@@ -58,4 +59,18 @@
     max-width: 1300px;
     height: auto;
     background-color: white; /* Thêm dòng này để đặt màu nền là trắng */
+}
+
+.carousel-caption-container .carousel-caption h5 {
+    font-family: 'Happy Monkey', sans-serif;
+    font-weight: bold; 
+    font-size: 24px; 
+    color: #3b9107;
+}
+
+.carousel-caption-container .carousel-caption p {
+    font-family: 'Happy Monkey', sans-serif;
+    font-weight: bold; 
+    font-size: 18px; 
+    color: #3b9107;
 }

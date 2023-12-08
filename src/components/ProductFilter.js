@@ -1,15 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { setMinPrice, setMaxPrice, setProductName } from '../actions/actions';
-import { toggleProductType } from '../actions/actions';
+import { setMinPrice, setMaxPrice, setProductName, toggleProductType } from '../actions/actions';
+import { Checkbox, FormControlLabel, FormGroup, TextField, Typography, Box } from '@mui/material';
 
 export default function ProductFilter() {
-    //const [name, setName] = useState('');
-    //const [minPrice, setMinPrice] = useState('');
-    //const [maxPrice, setMaxPrice] = useState('');
-    //const [types, setTypes] = useState([]);
-
     const dispatch = useDispatch();
+    const selectedTypes = useSelector(state => state.filter.productType);
 
     const handleNameChange = (event) => {
         dispatch(setProductName(event.target.value));
@@ -18,86 +14,93 @@ export default function ProductFilter() {
     const handleMaxPriceChange = (event) => {
         dispatch(setMaxPrice(event.target.value));
     };
-    // Handle min price change
+
     const handleMinPriceChange = (event) => {
         dispatch(setMinPrice(event.target.value));
     };
-    // Handle product type change
+
     const handleTypeChange = (type) => {
         dispatch(toggleProductType(type));
     };
-    const selectedTypes = useSelector(state => state.filter.productType);
+
     const handleSubmit = (event) => {
         event.preventDefault();
     };
 
-    // Inline styles
-    const filterBoxStyle = {
-        padding: '20px',
-        backgroundColor: '#48D1CC', // Sea blue color
-        borderRadius: '8px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
-        boxSizing: 'border-box'
+    const labelStyle = {
+        fontWeight: 'bold',
+        fontFamily: "'Happy Monkey', sans-serif",
+        color: '#000', 
     };
 
     const inputStyle = {
-        padding: '10px',
-        border: '1px solid #ccc',
+        backgroundColor: '#fff', 
         borderRadius: '4px',
-        marginBottom: '10px'
     };
-
-    const filterLabelStyle = {
-        marginBottom: '5px'
-    };
-
-
 
     return (
-        <form onSubmit={handleSubmit} style={filterBoxStyle}>
-            <div>
-                <label style={filterLabelStyle}>
-                    Product Name:
-                    <input
-                        style={inputStyle}
-                        type="text"
-                        onChange={handleNameChange}
-                    />
-                </label>
-            </div>
-            <div>
-                <label style={filterLabelStyle}>
-                    Min Price:
-                    <input
-                        style={inputStyle}
-                        type="number"
-                        onChange={handleMinPriceChange}
-                    />
-                </label>
-                <label style={filterLabelStyle}>
-                    Max Price:
-                    <input
-                        style={inputStyle}
-                        type="number"
-                        onChange={handleMaxPriceChange}
-                    />
-                </label>
-            </div>
-            <div>
+        <Box 
+            component="form" 
+            onSubmit={handleSubmit} 
+            sx={{
+                padding: '20px', 
+                backgroundColor: '#48D1CC', 
+                borderRadius: '8px', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '10px'
+            }}
+        >
+            <Typography variant="subtitle1" component="div" sx={labelStyle}>
+                Tên sản phẩm:
+            </Typography>
+            <TextField
+                variant="outlined"
+                onChange={handleNameChange}
+                size="small"
+                margin="dense"
+                sx={inputStyle}
+            />
+
+            <Typography variant="subtitle1" component="div" sx={labelStyle}>
+                Giá thấp nhất:
+            </Typography>
+            <TextField
+                variant="outlined"
+                type="number"
+                onChange={handleMinPriceChange}
+                size="small"
+                margin="dense"
+                sx={inputStyle}
+            />
+
+            <Typography variant="subtitle1" component="div" sx={labelStyle}>
+                Giá cao nhất:
+            </Typography>
+            <TextField
+                variant="outlined"
+                type="number"
+                onChange={handleMaxPriceChange}
+                size="small"
+                margin="dense"
+                sx={inputStyle}
+            />
+
+            <FormGroup>
                 {['Indica', 'Hybrid', 'Sativa'].map((type) => (
-                    <label key={type}>
-                        <input
-                            type="checkbox"
-                            value={type}
-                            checked={selectedTypes.includes(type)}
-                            onChange={() => handleTypeChange(type)}
-                        />
-                        {type}
-                    </label>
+                    <FormControlLabel
+                        key={type}
+                        control={
+                            <Checkbox
+                                checked={selectedTypes.includes(type)}
+                                onChange={() => handleTypeChange(type)}
+                                sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }} 
+                            />
+                        }
+                        label={<Typography sx={{ ...labelStyle, display: 'inline' }}>{type}</Typography>}
+                    />
                 ))}
-            </div>
-        </form>
+            </FormGroup>
+        </Box>
     );
 }

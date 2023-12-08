@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { clearCart, confirmOrder, createCustomer, hideModal, loginUser, showModal } from '../../actions/actions';
+import { clearCart, confirmOrder, createCustomer, hideModal, showModal } from '../../actions/actions';
 import { Button, Modal, TextField, Box, Paper, Typography } from '@mui/material';
 
 const modalStyle = {
@@ -12,7 +12,7 @@ const modalStyle = {
     width: 400,
     bgcolor: 'background.paper',
     boxShadow: 24,
-    p: 4, // Padding
+    p: 4, 
 };
 
 const OrderInfo = ({ onCancel }) => {
@@ -33,6 +33,8 @@ const OrderInfo = ({ onCancel }) => {
 
     const [orderConfirmation, setOrderConfirmation] = useState({ orderId: null, orderDate: null });
 
+    //  Đổi ngày tháng
+    const readableOrderDate = orderConfirmation.orderDate ? new Date(orderConfirmation.orderDate).toLocaleDateString() : null;
 
     //Hàm xử lý nút trên bảng
     const handleCancel = () => { if (onCancel) onCancel(); };
@@ -41,6 +43,13 @@ const OrderInfo = ({ onCancel }) => {
         if (cart.items.length === 0) {
             alert("Giỏ hàng rỗng!");
             return; // Thoát khỏi hàm nếu giỏ hàng không có sản phẩm
+        }
+
+        // Kiểm tra xem người dùng đã đăng nhập chưa trước khi xác nhận đơn hàng
+        if (!user.isLoggedIn) {
+            alert(`Bạn chưa đăng nhập!`);
+            navigate('/login');
+            return; 
         }
 
         const orderDetails = {
@@ -53,15 +62,8 @@ const OrderInfo = ({ onCancel }) => {
         };
         dispatch(confirmOrder(orderDetails))
             .then(response => {
-                if (!user.isLoggedIn) {
-                    alert(`Bạn chưa đăng nhập!`);
-                    navigate('/login');
-                    return;
-                } else {
-                    setOrderConfirmation({ orderId: response.orderId, orderDate: response.orderDate });
-                    dispatch(showModal());
-                    dispatch(loginUser(user));
-                }
+                setOrderConfirmation({ orderId: response.orderId, orderDate: response.orderDate });
+                dispatch(showModal());
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -79,9 +81,9 @@ const OrderInfo = ({ onCancel }) => {
 
 
     const handleModalConfirm = () => {
-        // Check if all fields are filled
+        // Kiểm tra các trường đã được nhập chưa
         if (Object.values(customerInfo).some(field => field === '')) {
-            alert('Please fill in all fields');
+            alert('Xin hãy điền đầy đủ thông tin!');
             return;
         }
         // Include the order information with the customer details
@@ -94,16 +96,14 @@ const OrderInfo = ({ onCancel }) => {
         };
         dispatch(createCustomer(customerData))
             .then(data => {
-                // Display a success message
-                alert("Customer created successfully");;
+                alert("Khách hàng được tạo thành công!");;
                 dispatch(clearCart());
                 localStorage.removeItem('cart');
                 dispatch(hideModal());
             })
             .catch(error => {
-                // Handle any errors from the createCustomer action
                 console.error('Error:', error);
-                alert(error.message); // Display error message
+                alert(error.message); 
             });
     };
 
@@ -115,6 +115,44 @@ const OrderInfo = ({ onCancel }) => {
     const customFontStyle = {
         fontFamily: "'Happy Monkey', sans-serif",
     };
+    // Item Name Style
+    const itemNameStyle = {
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: '1.2rem',
+        color: '#333',
+    };
+    // Item Quantity Style
+    const itemQuantityStyle = {
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: '1.1rem',
+        color: '#555',
+    };
+    //Button Confirm Style
+    const buttonConfirmStyle = {
+        backgroundColor: '#6c8e5d',
+        '&:hover': {
+            backgroundColor: '#388E3C',
+        },
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: 'large',
+        color: '#fef7d0',
+        fontweight: 'bold',
+        cursor: 'pointer',
+        margin: '10px 0',
+    };
+    // Button Cancel Style
+    const buttonCancelStyle = {
+        backgroundColor: '#fcba03',
+        '&:hover': {
+            backgroundColor: '#ff0011',
+        },
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: 'large',
+        color: '#01723e',
+        fontweight: 'bold',
+        cursor: 'pointer',
+        margin: '20px 0',
+    };
 
     return (
         <div>
@@ -122,9 +160,12 @@ const OrderInfo = ({ onCancel }) => {
                 <Paper sx={{ padding: 2, backgroundColor: '#fef7d0', boxShadow: 3 }}>
                     <Typography sx={{ ...customFontStyle, fontWeight: 'bold', fontSize: '2rem' }}>Xác nhận đơn hàng</Typography>
                     {cart.items.map(item => (
-                        <div key={item.id}>{item.name} - {item.quantity}</div>
+                        <div key={item.id}>
+                            <span style={itemNameStyle}>{item.name}</span>
+                            <span style={itemQuantityStyle}>- {item.quantity}</span>
+                        </div>
                     ))}
-                    <div style={{ fontWeight: 'bold', fontSize: '1.4rem' }}>Total: {cart.total}</div>
+                    <div style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Total: {cart.total}</div>
                     <Button variant="outlined" color="primary" onClick={handleConfirm} >Xác nhận</Button>
                     <Button variant="outlined" color="warning" onClick={handleCancel}>Hủy</Button>
                     <div>
@@ -134,9 +175,10 @@ const OrderInfo = ({ onCancel }) => {
                                 onClose={handleCloseModal}
                             >
                                 <Box sx={modalStyle}>
-                                    <h2>Nhập thông tin giao hàng</h2>
-                                    <div>Order ID: {orderConfirmation.orderId}</div>
-                                    <div>Order Date: {orderConfirmation.orderDate}</div>
+                                    <h2 style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.6rem' }}>Nhập thông tin giao hàng</h2>
+                                    <div style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.2rem' }}>Order ID: {orderConfirmation.orderId}</div>
+                                    <div style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.2rem' }}>Order Date: {readableOrderDate}</div>
+                                    <br />
                                     <TextField label="Full Name" name="fullName" onChange={handleInputChange} value={customerInfo.fullName} />
                                     <TextField label="Phone" name="phone" onChange={handleInputChange} value={customerInfo.phone} />
                                     <TextField label="Email" name="email" onChange={handleInputChange} value={customerInfo.email} />
@@ -144,8 +186,9 @@ const OrderInfo = ({ onCancel }) => {
                                     <TextField label="City" name="city" onChange={handleInputChange} value={customerInfo.city} />
                                     <TextField label="Country" name="country" onChange={handleInputChange} value={customerInfo.country} />
                                     <br></br>
-                                    <Button onClick={handleModalConfirm}>Xác nhận mua hàng</Button>
-                                    <Button>Hủy mua hàng</Button>
+                                    <br />
+                                    <Button onClick={handleModalConfirm} style={buttonConfirmStyle}>Xác nhận mua hàng</Button>
+                                    <Button style={buttonCancelStyle}>Hủy mua hàng</Button>
                                 </Box>
                             </Modal>
                         )}

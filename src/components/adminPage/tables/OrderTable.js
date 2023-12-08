@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { MenuItem, Card, CardContent, Grid, Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField, Box, Typography } from '@mui/material';
+import { Paper, MenuItem, Card, CardContent, Grid, Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField, Box, Typography } from '@mui/material';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -100,7 +100,7 @@ const OrderTable = () => {
             setHasFiltered(false);
         }
 
-        // Format the date to YYYY-MM-DD string for the query
+        // Đổi định dạng ngày tháng
         let dateString = '';
         if (filterDate) {
             // Chuyển đổi ngày sang định dạng YYYY-MM-DD mà không thay đổi múi giờ
@@ -112,7 +112,7 @@ const OrderTable = () => {
             const response = await fetch(`http://localhost:8000/order/${endpoint}`);
             let data = await response.json();
 
-            // Check if data.result exists, if not assume data is the array of orders
+            
             if (data.result) {
                 setOrders(data.result);
                 setFilteredOrders(data.result);
@@ -120,7 +120,6 @@ const OrderTable = () => {
                 setOrders(data);
                 setFilteredOrders(data);
             } else {
-                // If neither, log an error and set orders to an empty array
                 console.error('Unexpected response format:', data);
                 setOrders([]);
                 setFilteredOrders([]);
@@ -134,14 +133,14 @@ const OrderTable = () => {
     // useEffect để lấy danh sách order
     useEffect(() => {
         fetchOrders(); // Gọi fetchOrders ngay khi component được mount
-    }, []); // Không cần phụ thuộc vào hasFiltered hoặc orders.length
+    }, []); 
 
     // useEffect để lấy danh sách sản phẩm
     useEffect(() => {
         fetch('http://localhost:8000/product')
             .then(response => response.json())
             .then(data => setProducts(data.data))
-            .catch(error => console.error('Error fetching products:', error));
+            .catch(error => console.error('Có lỗi khi tải sản phẩm:', error));
     }, []);
 
     // Hàm chuyển đổi định dạng ngày tháng YYYY-MM-DD
@@ -228,16 +227,14 @@ const OrderTable = () => {
                 orderDetails: orderDetails.result || [],
                 customer: customer.result || []
             });
-            console.log(currentEditOrder);
             setIsEditModalOpen(true);
         } catch (error) {
-            console.error('Error fetching order details or customer:', error);
-            alert('Failed to fetch order details or customer');
+            console.error('Có lỗi khi tải thông tin đơn hàng và khác hàng:', error);
+            alert('Thất bại khi tải thông tin đơn hàng và khác hàng');
         }
     };
     //Hàm xử lý khi ấn nút Confirm trên Modal Sửa
     const handleUpdateConfirm = async () => {
-        console.log(currentEditOrder);
         try {
             // Gọi API để cập nhật thông tin sản phẩm trong orderDetails
             await fetch(`http://localhost:8000/orderDetail/${currentEditOrder.orderDetails._id}`, {
@@ -253,13 +250,13 @@ const OrderTable = () => {
                 body: JSON.stringify(currentEditOrder.customer)
             });
 
-            alert('Order and customer information updated successfully!');
+            alert('Đơn hàng thông tin khách hàng được cập nhật thành công!');
             setIsEditModalOpen(false);
             // Cập nhật lại danh sách đơn hàng nếu cần
             fetchOrders();
         } catch (error) {
-            console.error('Error updating order and customer:', error);
-            alert('Failed to update order and customer information');
+            console.error('Có lỗi khi cập nhật đơn hàng và thông tin khách hàng:', error);
+            alert('Thất bại khi cập nhật đơn hàng và thông tin khách hàng');
         }
     };
 
@@ -292,20 +289,54 @@ const OrderTable = () => {
         // Người dùng không xác nhận xóa
     };
 
+    const customFontStyle = {
+        fontFamily: "'Happy Monkey', sans-serif",
+    };
+    const modalStyle = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: '#fef9cc',
+        boxShadow: 24,
+        p: 4, // Padding
+    };
+    //Button Confirm Style
+    const buttonConfirmStyle = {
+        backgroundColor: '#6c8e5d',
+        '&:hover': {
+            backgroundColor: '#388E3C',
+        },
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: 'large',
+        color: '#fef7d0',
+        fontweight: 'bold',
+        cursor: 'pointer',
+        margin: '10px 0',
+    };
+    // Button Cancel Style
+    const buttonCancelStyle = {
+        backgroundColor: '#fcba03',
+        '&:hover': {
+            backgroundColor: '#ff0011',
+        },
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: 'large',
+        color: '#01723e',
+        fontweight: 'bold',
+        cursor: 'pointer',
+        margin: '20px 0',
+    };
 
     return (
-        <div>
-            {/* Nút mở Modal */}
-            <Button onClick={handleOpenModal} variant="contained" color="success" style={{ margin: '10px' }}>
-                Thêm Khách Hàng
-            </Button>
-
+        <Box sx={{ ...customFontStyle, padding: 2 }}>
             {/* Modal Thêm Đơn Hàng */}
             <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <Box style={{ backgroundColor: 'white', padding: 20, margin: '20px auto', width: '60%' }}>
-                    <Typography variant="h5" style={{ marginBottom: '20px' }}>Thêm Đơn Hàng Mới</Typography>
+                <Box sx={modalStyle}>
+                    <Typography variant="h5" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.6rem' }}>Thêm Đơn Hàng Mới</Typography>
                     {/* Form nhập thông tin sản phẩm */}
-                    <Typography variant="h6" style={{ marginTop: '20px' }}>Thông Tin Sản Phẩm</Typography>
+                    <Typography variant="h6" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Thông Tin Sản Phẩm</Typography>
                     {orderFormData.orderDetails.products.map((product, index) => (
                         <Box key={index} display="flex" alignItems="center" mb={2}>
                             <TextField
@@ -341,12 +372,12 @@ const OrderTable = () => {
                         +
                     </Button>
                     {/* Hiển thị Total Quantity */}
-                    <Typography variant="subtitle1" style={{ marginTop: '20px' }}>
+                    <Typography variant="subtitle1" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>
                         Total Quantity: {orderFormData.orderDetails.totalQuantity}
                     </Typography>
 
                     {/* Form nhập thông tin khách hàng */}
-                    <Typography variant="h6">Thông Tin Khách Hàng</Typography>
+                    <Typography variant="h6" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.6rem' }}>Thông Tin Khách Hàng</Typography>
                     <TextField
                         label="Full Name"
                         value={orderFormData.customer.fullName}
@@ -389,35 +420,32 @@ const OrderTable = () => {
                         margin="normal"
                         fullWidth
                     />
-                    {/* Thêm các trường khác cho thông tin customer */}
                     {/* Hiển thị thông tin OrderDate và Cost */}
-                    <Typography variant="subtitle1" style={{ marginTop: '20px' }}>Order Date: {orderFormData.order.orderDate}</Typography>
-                    <Typography variant="subtitle1">Cost: {orderFormData.order.cost}</Typography>
+                    <Typography variant="subtitle1" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Order Date: {orderFormData.order.orderDate}</Typography>
+                    <Typography variant="subtitle1" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Cost: {orderFormData.order.cost}</Typography>
 
                     <Box style={{ marginTop: '20px' }}>
-                        <Button onClick={handleConfirm} color="primary">Xác Nhận</Button>
-                        <Button onClick={() => setIsModalOpen(false)} color="secondary">Hủy</Button>
+                        <Button onClick={handleConfirm} style={buttonConfirmStyle}>Xác Nhận</Button>
+                        <Button onClick={() => setIsModalOpen(false)} style={buttonCancelStyle}>Hủy</Button>
                     </Box>
                 </Box>
             </Modal>
-
             {/* Modal Sửa sản phẩm*/}
             {currentEditOrder && (
                 <Modal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-                    <Box style={{ backgroundColor: 'white', padding: 20, margin: '20px auto', width: '50%' }}>
-                        <Typography variant="h5">Edit Order - ID: {currentEditOrder._id}</Typography>
-                        <Typography variant="h5">Order Date: {currentEditOrder.orderDate}</Typography>
-
+                    <Box sx={modalStyle}>
+                        <Typography variant="h5" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.6rem' }}>Sửa Đơn Hàng - ID: {currentEditOrder._id}</Typography>
+                        <Typography variant="h5" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Ngày Tạo: {currentEditOrder.orderDate}</Typography>
                         {/* Hiển thị thông tin chi tiết của OrderDetails */}
                         <Grid container spacing={2}>
                             {/* Phần Edit Product */}
                             <Grid item xs={12} md={6}>
                                 <Card>
                                     <CardContent>
-                                        <Typography variant="h6">Edit Product:</Typography>
+                                        <Typography variant="h6" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Sửa Sản Phẩm</Typography>
                                         {currentEditOrder.orderDetails.products.map((product, index) => (
                                             <Box key={product._id} mb={2}>
-                                                <Typography variant="subtitle1">Product ID: {product.product}</Typography>
+                                                <Typography variant="subtitle1" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.3rem' }}>Product ID: {product.product}</Typography>
                                                 <TextField
                                                     label="Quantity"
                                                     type="number"
@@ -433,10 +461,7 @@ const OrderTable = () => {
                                                         });
 
                                                         // Tính toán totalQuantity và total
-
                                                         const newTotalQuantity = newProducts.reduce((total, product) => total + product.quantity, 0);
-
-
                                                         // Cập nhật state
                                                         setCurrentEditOrder({
                                                             ...currentEditOrder,
@@ -461,7 +486,7 @@ const OrderTable = () => {
                             <Grid item xs={12} md={6}>
                                 <Card>
                                     <CardContent>
-                                        <Typography variant="subtitle1" style={{ marginTop: 20 }}>Customer Information</Typography>
+                                        <Typography variant="subtitle1" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.4rem' }}>Sửa thông tin khách hàng</Typography>
                                         <TextField
                                             label="Full Name"
                                             value={currentEditOrder.customer.fullName}
@@ -528,78 +553,101 @@ const OrderTable = () => {
                         </Grid>
                         {/* Thêm các trường khác để hiển thị thông tin khách hàng */}
                         <Box mt={3}>
-                            <Button onClick={handleUpdateConfirm} color="primary">Update</Button>
-                            <Button onClick={() => setIsEditModalOpen(false)} color="secondary">Cancel</Button>
+                            <Button onClick={handleUpdateConfirm} style={buttonConfirmStyle}>Update</Button>
+                            <Button onClick={() => setIsEditModalOpen(false)} style={buttonCancelStyle}>Cancel</Button>
                         </Box>
                     </Box>
                 </Modal>
             )}
             {/* Thêm bộ lọc ngày */}
-            <DatePicker
-                selected={filterDate}
-                onChange={(date) => {
-                    setFilterDate(date);
-                    if (!date) {
-                        setHasFiltered(false);
-                        fetchOrders();
-                    }
+            <Box
+             border={1}
+             borderColor="purple"
+             borderRadius={4}
+             p={2}
+             mb={2}
+             style={{ backgroundColor: 'lavender', width: '33%' }}
+            >
+                <Typography variant="h5" color="purple" style={{ ...customFontStyle, margin: '5px 0', fontWeight: 'bold' }}>Lọc Đơn Hàng Theo Ngày</Typography>
+                <DatePicker
+                    selected={filterDate}
+                    onChange={(date) => {
+                        setFilterDate(date);
+                        if (!date) {
+                            setHasFiltered(false);
+                            fetchOrders();
+                        }
+                    }}
+                />
+                <Button onClick={() => {
+                    setHasFiltered(true);
+                    fetchOrders();
                 }}
-            />
-            <Button onClick={() => {
-                setHasFiltered(true);
-                fetchOrders();
-            }} variant="contained" color="primary" style={{ marginLeft: '10px' }}>
-                Lọc
-            </Button>
+                    variant="contained"
+                    style={buttonConfirmStyle}>
+                    Lọc
+                </Button>
+            </Box>
+
             {/* Bảng hiển thị danh sách đơn hàng */}
-            <h2 style={{ textAlign: 'center' }}>
-                Danh sách đơn hàng
-            </h2>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>ID</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Ngày tạo đơn hàng</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Chi tiết đơn hàng</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Giá</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Khách hàng</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {(hasFiltered ? filteredOrders : orders).length > 0 ? (
-                        (hasFiltered ? filteredOrders : orders).map(order => {
-                            // Log ra thông tin của mỗi order
-                            return (
-                                <TableRow key={order._id}>
-                                    <TableCell>{order._id}</TableCell>
-                                    <TableCell>{formatDateToYYYYMMDD(new Date(order.orderDate))}</TableCell>
-                                    <TableCell>
-                                        {order.orderDetails.map(detailId => (
-                                            <div key={detailId}>
-                                                OrderDetails ID: {detailId}
-                                            </div>
-                                        ))}
-                                    </TableCell>
-                                    <TableCell>{order.cost}</TableCell>
-                                    <TableCell>
-                                        {order.customer ? `${order.customer}` : 'No Customer'}
-                                    </TableCell>
-                                    {/* Các cột khác */}
-                                    <TableCell>
-                                        <Button onClick={() => handleEdit(order)} style={{ backgroundColor: 'green', color: 'white', borderRadius: '5px' }}>Sửa</Button>
-                                        <Button onClick={() => handleDelete(order._id)} style={{ backgroundColor: 'red', color: 'white', borderRadius: '5px' }}>Xóa</Button>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })
-                    ) : (
+            <Paper elevation={3} sx={{ margin: 2, textAlign: 'center', padding: 2 }}>
+                <Typography variant="h3" component="h2" sx={{ ...customFontStyle, marginBottom: 2 }}>
+                    Danh sách đơn hàng
+                </Typography>
+                {/* Nút mở Modal */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+                    <Button onClick={handleOpenModal} variant="contained" color="success">
+                        Thêm Đơn Hàng
+                    </Button>
+                </Box>
+            </Paper>
+            <Paper elevation={3} sx={{ margin: 2 }}>
+                <Table>
+                    <TableHead>
                         <TableRow>
-                            <TableCell colSpan={6}>Không có đơn hàng nào.</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>ID</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Ngày tạo đơn hàng</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Chi tiết đơn hàng</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Giá</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Khách hàng</TableCell>
                         </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-        </div>
+                    </TableHead>
+                    <TableBody>
+                        {(hasFiltered ? filteredOrders : orders).length > 0 ? (
+                            (hasFiltered ? filteredOrders : orders).map(order => {
+                                // Log ra thông tin của mỗi order
+                                return (
+                                    <TableRow key={order._id}>
+                                        <TableCell>{order._id}</TableCell>
+                                        <TableCell>{formatDateToYYYYMMDD(new Date(order.orderDate))}</TableCell>
+                                        <TableCell>
+                                            {order.orderDetails.map(detailId => (
+                                                <div key={detailId}>
+                                                    OrderDetails ID: {detailId}
+                                                </div>
+                                            ))}
+                                        </TableCell>
+                                        <TableCell>{order.cost}</TableCell>
+                                        <TableCell>
+                                            {order.customer ? `${order.customer}` : 'No Customer'}
+                                        </TableCell>
+                                        {/* Các cột khác */}
+                                        <TableCell>
+                                            <Button onClick={() => handleEdit(order)} style={{ backgroundColor: 'green', color: 'white', borderRadius: '5px' }}>Sửa</Button>
+                                            <Button onClick={() => handleDelete(order._id)} style={{ backgroundColor: 'red', color: 'white', borderRadius: '5px' }}>Xóa</Button>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={6}>Không có đơn hàng nào.</TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </Paper>
+        </Box>
     );
 };
 

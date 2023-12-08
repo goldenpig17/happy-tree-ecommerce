@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField, Box, Typography } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { createCustomer } from "../../../actions/actions";
+import { Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField, Box, Typography, Paper } from '@mui/material';
+
 
 const CustomerTable = () => {
     const [customers, setCustomers] = useState([]);
@@ -20,8 +19,6 @@ const CustomerTable = () => {
     //State Modal Sửa Sản phẩm
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [currentEditCustomer, setCurrentEditCustomer] = useState(null);
-
-    const dispatch = useDispatch();
 
     // Hàm xử lý thay đổi trên các trường input
     const handleInputChange = (event) => {
@@ -181,17 +178,52 @@ const CustomerTable = () => {
             });
     };
 
+    const customFontStyle = {
+        fontFamily: "'Happy Monkey', sans-serif",
+    };
+    const modalStyle = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: '#fef9cc',
+        boxShadow: 24,
+        p: 4, // Padding
+    };
+    //Button Confirm Style
+    const buttonConfirmStyle = {
+        backgroundColor: '#6c8e5d',
+        '&:hover': {
+            backgroundColor: '#388E3C',
+        },
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: 'large',
+        color: '#fef7d0',
+        fontweight: 'bold',
+        cursor: 'pointer',
+        margin: '10px 0',
+    };
+    // Button Cancel Style
+    const buttonCancelStyle = {
+        backgroundColor: '#fcba03',
+        '&:hover': {
+            backgroundColor: '#ff0011',
+        },
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: 'large',
+        color: '#01723e',
+        fontweight: 'bold',
+        cursor: 'pointer',
+        margin: '20px 0',
+    };
 
     return (
-        <div>
-            {/* Nút mở Modal */}
-            <Button onClick={handleOpenModal} variant="contained" color="success" style={{ margin: '10px' }}>
-                Thêm Khách Hàng
-            </Button>
+        <Box sx={{ ...customFontStyle, padding: 2 }}>
             {/* Modal Thêm khách hàng*/}
             <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <Box style={{ backgroundColor: 'white', padding: 20, margin: '20px auto', width: '50%' }}>
-                    <Typography variant="h5">Thêm Khách Hàng</Typography>
+                <Box sx={modalStyle}>
+                    <Typography variant="h5" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.6rem' }}>Thêm Khách Hàng</Typography>
                     <TextField label="Họ tên" name="fullName" onChange={handleInputChange} fullWidth margin="normal" />
                     <TextField label="Số điện thoại" name="phone" onChange={handleInputChange} fullWidth margin="normal" />
                     <TextField label="Email" name="email" onChange={handleInputChange} fullWidth margin="normal" />
@@ -199,14 +231,14 @@ const CustomerTable = () => {
                     <TextField label="Thành phố" name="city" onChange={handleInputChange} fullWidth margin="normal" />
                     <TextField label="Quốc gia" name="country" onChange={handleInputChange} fullWidth margin="normal" />
                     {/* Cột Action */}
-                    <Button onClick={handleConfirm} color="primary">Xác Nhận</Button>
-                    <Button onClick={() => setIsModalOpen(false)} color="secondary">Hủy</Button>
+                    <Button onClick={handleConfirm} style={buttonConfirmStyle}>Xác Nhận</Button>
+                    <Button onClick={() => setIsModalOpen(false)} style={buttonCancelStyle}>Hủy</Button>
                 </Box>
             </Modal>
             {/* Modal Sửa Khách hàng*/}
             <Modal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-                <Box style={{ backgroundColor: 'white', padding: 20, margin: '20px auto', width: '50%' }}>
-                    <Typography variant="h5">Sửa Thông Tin Khách Hàng - ID: {currentEditCustomer?._id}</Typography>
+                <Box sx={modalStyle}>
+                    <Typography variant="h5" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.6rem' }}>Sửa Thông Tin Khách Hàng - ID: {currentEditCustomer?._id}</Typography>
                     <TextField
                         label="Họ Tên"
                         name="fullName"
@@ -243,62 +275,74 @@ const CustomerTable = () => {
                         value={currentEditCustomer?.country}
                         onChange={e => setCurrentEditCustomer({ ...currentEditCustomer, country: e.target.value })}
                         fullWidth margin="normal" />
-                    <Button onClick={handleUpdateConfirm} color="primary">Cập Nhật</Button>
-                    <Button onClick={() => setIsEditModalOpen(false)} color="secondary">Hủy</Button>
+                    <Button onClick={handleUpdateConfirm} style={buttonConfirmStyle}>Cập Nhật</Button>
+                    <Button onClick={() => setIsEditModalOpen(false)} style={buttonCancelStyle}>Hủy</Button>
                 </Box>
             </Modal>
+            {/* Lọc khách hàng */}
             <Box
                 border={1}
                 borderColor="purple"
                 borderRadius={4}
                 p={2}
                 mb={2}
-                style={{ backgroundColor: 'lavender', width: '33%' }}>
-                <Typography variant="h5" color="purple" style={{ margin: '5px 0', fontWeight: 'bold' }}>Lọc Khách Hàng</Typography>
+                style={{ backgroundColor: 'lavender', width: '33%' }}
+            >
+                <Typography variant="h5" color="purple" style={{ ...customFontStyle, margin: '5px 0', fontWeight: 'bold' }}>Lọc Khách Hàng</Typography>
                 <TextField label="Họ tên, số điện thoại và/hoặc email" value={searchTerm} onChange={handleSearchChange} fullWidth style={{ width: '50%' }} />
             </Box>
             {/* Bảng hiển thị danh sách khách hàng */}
-            <h2 style={{ textAlign: 'center' }}>
-                Danh sách khách hàng
-            </h2>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>ID</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Họ tên</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Email</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Số điện thoại</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Địa chỉ</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Thành phố</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Quốc gia</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Actions</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? (
-                        filteredCustomers.map(customer => (
-                            <TableRow key={customer._id}>
-                                <TableCell>{customer._id}</TableCell>
-                                <TableCell>{customer.fullName}</TableCell>
-                                <TableCell>{customer.email}</TableCell>
-                                <TableCell>{customer.phone}</TableCell>
-                                <TableCell>{customer.address}</TableCell>
-                                <TableCell>{customer.city}</TableCell>
-                                <TableCell>{customer.country}</TableCell>
-                                <TableCell>
-                                    <Button onClick={() => handleEdit(customer)} style={{ backgroundColor: 'green', color: 'white', borderRadius: '5px' }}>Sửa</Button>
-                                    <Button onClick={() => handleDelete(customer._id)} style={{ backgroundColor: 'red', color: 'white', borderRadius: '5px' }}>Xóa</Button>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
+            <Paper elevation={3} sx={{ margin: 2, textAlign: 'center', padding: 2 }}>
+                <Typography variant="h3" component="h2" sx={{ ...customFontStyle, marginBottom: 2 }}>
+                    Danh sách khách hàng
+                </Typography>
+                {/* Nút mở Modal */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+                    <Button onClick={handleOpenModal} variant="contained" color="success">
+                        Thêm Khách hàng
+                    </Button>
+                </Box>
+            </Paper>
+            <Paper elevation={3} sx={{ margin: 2 }}>
+                <Table>
+                    <TableHead>
                         <TableRow>
-                            <TableCell colSpan={9}>No customers found.</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>ID</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Họ tên</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Email</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Số điện thoại</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Địa chỉ</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Thành phố</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Quốc gia</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Actions</TableCell>
                         </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-        </div>
+                    </TableHead>
+                    <TableBody>
+                        {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? (
+                            filteredCustomers.map(customer => (
+                                <TableRow key={customer._id}>
+                                    <TableCell>{customer._id}</TableCell>
+                                    <TableCell>{customer.fullName}</TableCell>
+                                    <TableCell>{customer.email}</TableCell>
+                                    <TableCell>{customer.phone}</TableCell>
+                                    <TableCell>{customer.address}</TableCell>
+                                    <TableCell>{customer.city}</TableCell>
+                                    <TableCell>{customer.country}</TableCell>
+                                    <TableCell>
+                                        <Button onClick={() => handleEdit(customer)} style={{ backgroundColor: 'green', color: 'white', borderRadius: '5px' }}>Sửa</Button>
+                                        <Button onClick={() => handleDelete(customer._id)} style={{ backgroundColor: 'red', color: 'white', borderRadius: '5px' }}>Xóa</Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={9}>No customers found.</TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </Paper>
+        </Box>
     );
 };
 

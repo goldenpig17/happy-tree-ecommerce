@@ -42,7 +42,7 @@ export default function IconNavBar() {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('refreshToken');
         setIsLoggedIn(false); // Cập nhật trạng thái đăng nhập
-        navigate("/"); // Chuyển hướng về trang chủ hoặc trang đăng nhập
+        navigate("/"); 
         handleClose();
     };
 
@@ -88,13 +88,13 @@ export default function IconNavBar() {
                     }
                 }}
             >
-                <Tooltip title="Management Dashboard">
+                <Tooltip title="Công Cụ Quản Lý">
                     <SummarizeIcon onClick={handleAdmin} />
                 </Tooltip>
-                <Tooltip title="Account">
+                <Tooltip title="Tài Khoản">
                     <AccountCircleIcon onClick={handleMenu} />
                 </Tooltip>
-                <Tooltip title="Cart">
+                <Tooltip title="Giỏ Hàng">
                     <Badge badgeContent={cartItemCount} color="secondary">
                         <ShoppingCartIcon onClick={handleCart} />
                     </Badge>
@@ -116,15 +116,14 @@ export default function IconNavBar() {
                 onClose={handleClose}
             >
                 {isLoggedIn ? (
-                    <MenuItem onClick={handleLogout}>Log Out</MenuItem>
+                    <MenuItem onClick={handleLogout}>Đăng Xuất</MenuItem>
                 ) : (
                     <>
-                        <MenuItem onClick={handleSignUp}>Sign Up</MenuItem>
-                        <MenuItem onClick={handleLogin}>Login</MenuItem>
+                        <MenuItem onClick={handleSignUp}>Đăng Ký</MenuItem>
+                        <MenuItem onClick={handleLogin}>Đăng Nhập</MenuItem>
                     </>
                 )}
             </Menu>
         </div>
-
     );
 }

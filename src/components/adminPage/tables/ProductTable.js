@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from "react";
-import { FormControl, Button, Modal, Select, MenuItem, InputLabel, Table, TableBody, TableCell, TableHead, TableRow, TextField, Slider, FormGroup, FormControlLabel, Checkbox, Box, Typography } from '@mui/material';
+import { Paper, FormControl, Button, Modal, Select, MenuItem, InputLabel, Table, TableBody, TableCell, TableHead, TableRow, TextField, Slider, FormGroup, FormControlLabel, Checkbox, Box, Typography } from '@mui/material';
 
 
 const ProductTable = () => {
@@ -208,15 +208,52 @@ const ProductTable = () => {
         }
     };
 
+    const customFontStyle = {
+        fontFamily: "'Happy Monkey', sans-serif",
+    };
+    const modalStyle = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: '#fef9cc',
+        boxShadow: 24,
+        p: 4, // Padding
+    };
+    //Button Confirm Style
+    const buttonConfirmStyle = {
+        backgroundColor: '#6c8e5d',
+        '&:hover': {
+            backgroundColor: '#388E3C',
+        },
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: 'large',
+        color: '#fef7d0',
+        fontweight: 'bold',
+        cursor: 'pointer',
+        margin: '10px 0',
+    };
+    // Button Cancel Style
+    const buttonCancelStyle = {
+        backgroundColor: '#fcba03',
+        '&:hover': {
+            backgroundColor: '#ff0011',
+        },
+        fontFamily: "'Happy Monkey', sans-serif",
+        fontSize: 'large',
+        color: '#01723e',
+        fontweight: 'bold',
+        cursor: 'pointer',
+        margin: '20px 0',
+    };
+
     return (
-        <div>
-            {/* Nút mở Modal */}
-            <Button onClick={handleOpenModal} variant="contained" color="success" style={{ margin: '10px' }}>
-                Thêm Sản Phẩm
-            </Button>
+        <Box sx={{ ...customFontStyle, padding: 2 }}>
             {/* Modal Thêm sản phẩm*/}
             <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <Box style={{ backgroundColor: 'white', padding: 20, margin: '20px auto', width: '50%' }}>
+                <Box sx={modalStyle}>
+                    <h2 style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.6rem' }}>Thêm Sản Phẩm</h2>
                     <TextField label="Tên Sản Phẩm" name="name" onChange={handleInputChange} fullWidth margin="normal" />
                     <FormControl fullWidth margin="normal">
                         <InputLabel>Loại Sản Phẩm</InputLabel>
@@ -236,14 +273,14 @@ const ProductTable = () => {
                     <TextField label="Giá bán" name="promotionPrice" onChange={handleInputChange} fullWidth margin="normal" />
                     <TextField label="Số lượng" name="amount" onChange={handleInputChange} fullWidth margin="normal" />
                     {/* Các trường input khác: description, imageUrl, buyPrice, promotionPrice, amount */}
-                    <Button onClick={handleConfirm} color="primary">Xác Nhận</Button>
-                    <Button onClick={() => setIsModalOpen(false)} color="secondary">Hủy</Button>
+                    <Button onClick={handleConfirm} style={buttonConfirmStyle}>Xác Nhận</Button>
+                    <Button onClick={() => setIsModalOpen(false)} style={buttonCancelStyle}>Hủy</Button>
                 </Box>
             </Modal>
             {/* Modal Sửa sản phẩm*/}
             <Modal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-                <Box style={{ backgroundColor: 'white', padding: 20, margin: '20px auto', width: '50%' }}>
-                    <Typography variant="h5">Sửa Sản Phẩm - ID: {currentEditProduct?._id}</Typography>
+                <Box sx={modalStyle}>
+                    <Typography variant="h5" style={{ ...customFontStyle, fontWeight: 'bold', fontSize: '1.6rem' }}>Sửa Sản Phẩm - ID: {currentEditProduct?._id}</Typography>
                     <TextField label="Tên Sản Phẩm" name="name" value={currentEditProduct?.name} onChange={e => setCurrentEditProduct({ ...currentEditProduct, name: e.target.value })} fullWidth margin="normal" />
                     <FormControl fullWidth margin="normal">
                         <InputLabel>Loại Sản Phẩm</InputLabel>
@@ -262,8 +299,8 @@ const ProductTable = () => {
                     <TextField label="Giá bán" name="buyPrice" value={currentEditProduct?.buyPrice} onChange={e => setCurrentEditProduct({ ...currentEditProduct, name: e.target.value })} fullWidth margin="normal" />
                     <TextField label="Giá niêm yết" name="promotionPrice" value={currentEditProduct?.promotionPrice} onChange={e => setCurrentEditProduct({ ...currentEditProduct, name: e.target.value })} fullWidth margin="normal" />
                     <TextField label="Số lượng" name="amount" value={currentEditProduct?.amount} onChange={e => setCurrentEditProduct({ ...currentEditProduct, name: e.target.value })} fullWidth margin="normal" />
-                    <Button onClick={handleUpdateConfirm} color="primary">Cập Nhật</Button>
-                    <Button onClick={() => setIsEditModalOpen(false)} color="secondary">Hủy</Button>
+                    <Button onClick={handleUpdateConfirm} style={buttonConfirmStyle}>Cập Nhật</Button>
+                    <Button onClick={() => setIsEditModalOpen(false)} style={buttonCancelStyle}>Hủy</Button>
                 </Box>
             </Modal>
             {/* Lọc sản phẩm */}
@@ -273,15 +310,16 @@ const ProductTable = () => {
                 borderRadius={4}
                 p={2}
                 mb={2}
-                style={{ backgroundColor: 'lavender', width: '33%' }}>
-                <Typography variant="h5" color="purple" style={{ margin: '5px 0', fontWeight: 'bold' }}>Lọc Sản Phẩm Theo Tên</Typography>
+                style={{ backgroundColor: 'lavender', width: '33%' }}
+            >
+                <Typography variant="h5" color="purple" style={{ ...customFontStyle, margin: '5px 0', fontWeight: 'bold' }}>Lọc Sản Phẩm Theo Tên</Typography>
                 <TextField
                     label="Tìm kiếm sản phẩm theo tên"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <br></br>
-                <Typography variant="h5" color="purple" style={{ margin: '10px 0', fontWeight: 'bold' }}>Lọc Sản Phẩm Theo Giá</Typography>
+                <Typography variant="h5" color="purple" style={{ ...customFontStyle, margin: '10px 0', fontWeight: 'bold' }}>Lọc Sản Phẩm Theo Giá</Typography>
                 <Slider
                     value={priceRange}
                     onChange={(e, newValue) => setPriceRange(newValue)}
@@ -289,7 +327,7 @@ const ProductTable = () => {
                     max={100}
                 />
                 <br></br>
-                <Typography variant="h5" color="purple" style={{ margin: '5px 0', fontWeight: 'bold' }}>Lọc Sản Phẩm Theo Loại</Typography>
+                <Typography variant="h5" color="purple" style={{ ...customFontStyle, margin: '5px 0', fontWeight: 'bold' }}>Lọc Sản Phẩm Theo Loại</Typography>
                 <FormGroup>
                     <FormControlLabel
                         control={<Checkbox checked={selectedCategories.includes('Sativa')} onChange={() => handleCategoryChange('Sativa')} />}
@@ -306,39 +344,49 @@ const ProductTable = () => {
                 </FormGroup>
             </Box>
             {/* Bảng hiện thị danh sách sản phẩm */}
-            <h2 style={{ textAlign: 'center' }}>
-                Danh sách sản phẩm
-            </h2>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>ID</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Name</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Mô tả sản phẩm</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Loại</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Giá niêm yết</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Giá khuyến mãi</TableCell>
-                        <TableCell style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Actions</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {filteredProducts.map(product => (
-                        <TableRow key={product._id}>
-                            <TableCell>{product._id}</TableCell>
-                            <TableCell>{product.name}</TableCell>
-                            <TableCell>{product.description}</TableCell>
-                            <TableCell>{product.category}</TableCell>
-                            <TableCell>{product.buyPrice}</TableCell>
-                            <TableCell>{product.promotionPrice}</TableCell>
-                            <TableCell>
-                                <Button onClick={() => handleEdit(product)} style={{ backgroundColor: 'green', color: 'white', borderRadius: '5px' }}>Sửa</Button>
-                                <Button onClick={() => handleDelete(product._id)} style={{ backgroundColor: 'red', color: 'white', borderRadius: '5px' }}>Xóa</Button>
-                            </TableCell>
+            <Paper elevation={3} sx={{ margin: 2, textAlign: 'center', padding: 2 }}>
+                <Typography variant="h3" component="h2" sx={{ ...customFontStyle, marginBottom: 2 }}>
+                    Danh sách sản phẩm
+                </Typography>
+                {/* Nút mở Modal */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+                    <Button onClick={handleOpenModal} variant="contained" color="success">
+                        Thêm Sản Phẩm
+                    </Button>
+                </Box>
+            </Paper>
+            <Paper elevation={3} sx={{ margin: 2 }}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>ID</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Name</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Mô tả sản phẩm</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Loại</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Giá niêm yết</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Giá khuyến mãi</TableCell>
+                            <TableCell style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Actions</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </div>
+                    </TableHead>
+                    <TableBody>
+                        {filteredProducts.map(product => (
+                            <TableRow key={product._id}>
+                                <TableCell style={{ fontSize: '1.1rem' }}>{product._id}</TableCell>
+                                <TableCell style={{ fontSize: '1.1rem' }}>{product.name}</TableCell>
+                                <TableCell style={{ fontSize: '1.1rem' }}>{product.description}</TableCell>
+                                <TableCell style={{ fontSize: '1.1rem' }}>{product.category}</TableCell>
+                                <TableCell style={{ fontSize: '1.1rem' }}>{product.buyPrice}</TableCell>
+                                <TableCell style={{ fontSize: '1.1rem' }}>{product.promotionPrice}</TableCell>
+                                <TableCell>
+                                    <Button onClick={() => handleEdit(product)} style={{ backgroundColor: 'green', color: 'white', borderRadius: '5px' }}>Sửa</Button>
+                                    <Button onClick={() => handleDelete(product._id)} style={{ backgroundColor: 'red', color: 'white', borderRadius: '5px' }}>Xóa</Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </Paper>
+        </Box>
     );
 }
 

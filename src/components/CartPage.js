@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateQuantity } from '../actions/actions';
+import { updateQuantity, updateCart, loginUser } from '../actions/actions';
 import {
     Table,
     TableBody,
@@ -23,30 +23,50 @@ import BreadCrumb from './breadcrumbs/BreadCrumb';
 const CartPage = () => {
     const dispatch = useDispatch();
     const cart = useSelector(state => state.cart.items);
-    console.log(cart);
     const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
-
     const [showOrderInfo, setShowOrderInfo] = useState(false);
+    const isLoggedIn = useSelector(state => state.user.isLoggedIn);
+
+
+    useEffect(() => {
+        if (isLoggedIn === 'true') {
+            // Lấy token từ sessionStorage
+            const token = sessionStorage.getItem('token');
+            // Dispatch hành động đăng nhập với token
+            dispatch(loginUser({ token }));
+        }
+    }, [dispatch]);
+
+    // Cập nhật giỏ hàng từ localStorage khi component được mount
+    useEffect(() => {
+        const cartFromStorage = JSON.parse(localStorage.getItem('cart')) || [];
+        dispatch(updateCart(cartFromStorage));
+    }, [dispatch]);
+
+    // Lắng nghe sự kiện cập nhật giỏ hàng từ các phần khác của ứng dụng
+    useEffect(() => {
+        const handleCartUpdate = () => {
+            const cartFromStorage = JSON.parse(localStorage.getItem('cart')) || [];
+            dispatch(updateCart(cartFromStorage));
+        };
+
+        window.addEventListener('cartUpdated', handleCartUpdate);
+
+        return () => {
+            window.removeEventListener('cartUpdated', handleCartUpdate);
+        };
+    }, [dispatch]);
 
     const handlePurchaseClick = () => {
         setShowOrderInfo(true);
     };
 
     const handleQuantityChange = (_id, increment) => {
-        if (increment) {
-            dispatch(updateQuantity(_id, true));
-        } else {
-            const product = cart.find(item => item._id === _id);
-            if (product && product.quantity === 1) {
-                handleRemove(_id);
-            } else {
-                dispatch(updateQuantity(_id, false));
-            }
-        }
+        dispatch(updateQuantity(_id, increment));
     };
 
-    const handleRemove = (_id) => {
-        const updatedCart = cart.filter(item => item._id !== _id);
+    const handleRemove = (id) => {
+        const updatedCart = cart.filter(item => item.id !== id);
         dispatch({ type: 'REMOVE_ITEM', payload: updatedCart });
         localStorage.setItem('cart', JSON.stringify(updatedCart));
     };
@@ -95,21 +115,21 @@ const CartPage = () => {
                     </TableHead>
                     <TableBody>
                         {cart.map((product) => (
-                            <TableRow key={product._id}>
+                            <TableRow key={product.id}>
                                 <TableCell>{product.name}</TableCell>
                                 <TableCell align="right">${product.price.toFixed(2)}</TableCell>
                                 <TableCell align="right">
-                                    <IconButton onClick={() => handleQuantityChange(product._id, false)} disabled={product.quantity <= 1}>
+                                    <IconButton onClick={() => handleQuantityChange(product.id, false)} disabled={product.quantity <= 1}>
                                         <RemoveIcon />
                                     </IconButton>
                                     {product.quantity}
-                                    <IconButton onClick={() => handleQuantityChange(product._id, true)}>
+                                    <IconButton onClick={() => handleQuantityChange(product.id, true)}>
                                         <AddIcon />
                                     </IconButton>
                                 </TableCell>
                                 <TableCell align="right">${(product.price * product.quantity).toFixed(2)}</TableCell>
                                 <TableCell align="right">
-                                    <IconButton onClick={() => handleRemove(product._id)}>
+                                    <IconButton onClick={() => handleRemove(product.id)}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </TableCell>

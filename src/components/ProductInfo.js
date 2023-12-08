@@ -7,15 +7,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductDetails } from '../actions/actions';
 import LatestProducts from './content/lastestProducts/LatestProducts';
 import ViewAll from './content/viewAll/viewAll';
-import { Paper, Box } from '@mui/material';
+import { Typography, Box, Grid, Card, CardContent, Button } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const ProductInfo = ({ name, buyPrice }) => {
     const { _id } = useParams();
     const dispatch = useDispatch();
     const productDetails = useSelector((state) => state.products.productDetails);
-    console.log(productDetails);
     const { isLoading, error } = useSelector(state => state.products);
-    const [quantity, setQuantity] = useState(1); // State for product quantity
+    const [quantity, setQuantity] = useState(1); 
 
     useEffect(() => {
         if (_id) {
@@ -38,14 +39,14 @@ const ProductInfo = ({ name, buyPrice }) => {
     const addToCart = () => {
         const cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-        // Check if the product with the same _id already exists in the cart
+        //Kiểm tra xem có sản phầm nào trùng Id không
         const existingProductIndex = cart.findIndex((product) => product.id === _id);
 
         if (existingProductIndex !== -1) {
-            // If the product exists, update its quantity
+            // Nếu có, thêm số lượng
             cart[existingProductIndex].quantity += 1;
         } else {
-            // If the product doesn't exist, add it to the cart with quantity 1
+            // Nếu không có, thêm sản phẩm vào giỏ với số lượng là 1
             const productToAdd = {
                 id: _id,
                 name: productDetails.data.name,
@@ -56,7 +57,6 @@ const ProductInfo = ({ name, buyPrice }) => {
         }
 
         localStorage.setItem('cart', JSON.stringify(cart));
-        // Dispatch a custom event
         window.dispatchEvent(new Event('cartUpdated'));
     };
 
@@ -67,7 +67,7 @@ const ProductInfo = ({ name, buyPrice }) => {
         return <div>Error: {error}</div>;
     }
     if (!productDetails) {
-        return <div>Product not found</div>;
+        return <div>Không tìm thấy sản phẩm</div>;
     }
 
     const breadcrumbs = [
@@ -76,43 +76,70 @@ const ProductInfo = ({ name, buyPrice }) => {
         { name: "Thông tin chi tiết", url: `/products/${_id}` }
     ];
 
+    // Styles
+    const customFontStyle = {
+        fontFamily: "'Happy Monkey', sans-serif",
+    };
+
+    const buttonStyle = {
+        margin: '0 10px',
+        fontSize: '1.5rem',
+    };
+    // Style gạch giá cũ
+    const originalPriceStyle = {
+        textDecoration: 'line-through',
+        marginRight: '10px'
+    };
+
     return (
         <>
             <Header />
             <Box sx={{ padding: 0.2 }}>
-                <Paper elevation={1} sx={{ padding: 0.1, margin: 1 }}>
-                    <BreadCrumb breadcrumbs={breadcrumbs} />
-                </Paper>
+                <BreadCrumb breadcrumbs={breadcrumbs} />
             </Box>
             <Box sx={{ padding: 2 }}>
-                <Paper elevation={3} sx={{ padding: 3, margin: 2, backgroundColor: '#fef7d0' }}>
-                    <h1 style={{ textAlign: 'center' }}>Thông tin chi tiết</h1>
-                    <div className="product-info-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <div className="product-image" style={{ flex: 1 }}>
-                            <img
-                                src={productDetails.data.imageUrl}
-                                alt={productDetails.data.name}
-                                style={{ width: '100%', height: 'auto' }}
-                            />
-                        </div>
-                        <div className="product-details" style={{ flex: 3 }}>
-                            <h1>{productDetails.data.name}</h1>
-                            <p>Giá: ${productDetails.data.buyPrice}</p>
-                            <p>Loại: {productDetails.data.category}</p>
-                            <div>
-                                <button onClick={decrementQuantity}>-</button>
-                                <span>{quantity}</span>
-                                <button onClick={incrementQuantity}>+</button>
-                            </div>
-                            <button type="button" className="btn btn-primary" onClick={addToCart}>Thêm vào giỏ</button>
-                        </div>
-                    </div>
-                    <br/>
-                    <h3>Thông tin mô tả</h3>
-                    <p>{productDetails.data.description}</p>
-                    <br/>
-                    <h3>Sản phẩm liên quan</h3>
-                </Paper>
+                <Card raised sx={{ maxWidth: 900, margin: 'auto', backgroundColor: 'white' }}>
+                    <CardContent>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} md={6}>
+                                <img
+                                    src={productDetails.data.imageUrl}
+                                    alt={productDetails.data.name}
+                                    style={{ width: '100%', height: 'auto' }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Typography variant="h3" gutterBottom style={customFontStyle}>
+                                    {productDetails.data.name}
+                                </Typography>
+                                <Typography variant="body1" style={customFontStyle}>
+                                    {productDetails.data.description}
+                                </Typography>
+                                <br />
+                                <Typography variant="h5" style={customFontStyle}>
+                                    Giá: $ <span  style={originalPriceStyle}>{productDetails.data.buyPrice}  </span> ${productDetails.data.promotionPrice}
+                                </Typography>
+                                <Typography variant="h6" style={customFontStyle}>
+                                    Loại: {productDetails.data.category}
+                                </Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
+                                    <Button onClick={decrementQuantity} size="large" style={buttonStyle}>
+                                        <RemoveIcon fontSize="inherit" />
+                                    </Button>
+                                    <Typography variant="h5" component="span" style={{ ...customFontStyle, minWidth: '3rem', textAlign: 'center' }}>
+                                        {quantity}
+                                    </Typography>
+                                    <Button onClick={incrementQuantity} size="large" style={buttonStyle}>
+                                        <AddIcon fontSize="inherit" />
+                                    </Button>
+                                </Box>
+                                <Button variant="contained" color="success" onClick={addToCart} style={customFontStyle}>
+                                    Thêm vào giỏ
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
             </Box>
             <LatestProducts />
             <ViewAll />
@@ -122,3 +149,4 @@ const ProductInfo = ({ name, buyPrice }) => {
 };
 
 export default ProductInfo;
+

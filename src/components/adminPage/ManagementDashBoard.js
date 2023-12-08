@@ -7,7 +7,7 @@ import BreadCrumb from '../breadcrumbs/BreadCrumb';
 
 
 const ManagementDashboard = () => {
-    const [activeTable, setActiveTable] = useState('products'); // products, customers, orders
+    const [activeTable, setActiveTable] = useState('products');
 
     //BreadCrumb
     const breadcrumbs = [
@@ -28,17 +28,16 @@ const ManagementDashboard = () => {
             <Typography variant="h3" align="center" style={{ margin: '20px 0', fontWeight: 'bold' }}>
                 Dashboard Quản Lý
             </Typography>
-
             {/* Các nút để chuyển đổi giữa các bảng */}
             <Box display="flex" justifyContent="center" alignItems="center" marginBottom={2}>
                 <button
                     variant="contained"
                     style={{
-                        backgroundColor: '#0277bd', // Màu xanh nước biển đậm
+                        backgroundColor: '#0277bd', 
                         color: 'white',
-                        margin: '0 10px', // Khoảng cách giữa các nút
-                        borderRadius: '20px', // Bo viền tròn
-                        padding: '10px 20px' // Tăng kích thước
+                        margin: '0 10px', 
+                        borderRadius: '20px', 
+                        padding: '10px 20px'
                     }}
                     onClick={() => setActiveTable('products')}
                 >
@@ -46,11 +45,11 @@ const ManagementDashboard = () => {
                 <button
                     variant="contained"
                     style={{
-                        backgroundColor: '#0277bd', // Màu xanh nước biển đậm
+                        backgroundColor: '#0277bd', 
                         color: 'white',
-                        margin: '0 10px', // Khoảng cách giữa các nút
-                        borderRadius: '20px', // Bo viền tròn
-                        padding: '10px 20px' // Tăng kích thước
+                        margin: '0 10px', 
+                        borderRadius: '20px', 
+                        padding: '10px 20px' 
                     }}
                     onClick={() => setActiveTable('customers')}
                 >
@@ -58,11 +57,11 @@ const ManagementDashboard = () => {
                 <button
                     variant="contained"
                     style={{
-                        backgroundColor: '#0277bd', // Màu xanh nước biển đậm
+                        backgroundColor: '#0277bd',
                         color: 'white',
-                        margin: '0 10px', // Khoảng cách giữa các nút
-                        borderRadius: '20px', // Bo viền tròn
-                        padding: '10px 20px' // Tăng kích thước
+                        margin: '0 10px', 
+                        borderRadius: '20px', 
+                        padding: '10px 20px' 
                     }}
                     onClick={() => setActiveTable('orders')}
                 >

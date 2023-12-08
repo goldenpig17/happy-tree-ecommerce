@@ -25,7 +25,6 @@ export const fetchProducts = () => async (dispatch) => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log('Fetched Products:', data); // Log the fetched products
         dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: data.data });
     } catch (error) {
         dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
@@ -96,11 +95,11 @@ export const removeItem = _id => {
     };
 };
 
-export const updateQuantity = (_id, increment) => {
+export const updateQuantity = (id, increment) => {
     return (dispatch, getState) => {
         const { cart } = getState();
         let updatedCart = cart.items.map(item => {
-            if (item._id === _id) {
+            if (item.id === id) {
                 const updatedQuantity = increment ? item.quantity + 1 : Math.max(item.quantity - 1, 0);
                 return { ...item, quantity: updatedQuantity };
             }
@@ -116,6 +115,8 @@ export const updateQuantity = (_id, increment) => {
         localStorage.setItem('cart', JSON.stringify(updatedCart));
     };
 };
+
+
 
 //orderDetail & order Actions
 export const confirmOrder = (orderInfo) => {
@@ -142,14 +143,13 @@ export const confirmOrder = (orderInfo) => {
                 }),
             });
             const orderData = await orderResponse.json();
-            const orderId = orderData.orderId; // Assuming the response contains the ID of the created order
-            // Return the order ID for further use
+            const orderId = orderData.orderId;
             return {
-                orderId: orderId,  // Giả sử _id là ID của order
-                orderDate: orderData.order.orderDate // Giả sử orderDate là ngày của order
+                orderId: orderId,  
+                orderDate: orderData.order.orderDate 
             };
         } catch (error) {
-            console.error('Error during order processing:', error);
+            console.error('Có lỗi khi tạo đơn hàng:', error);
             return null;
         }
     };
@@ -165,11 +165,12 @@ export const hideModal = () => ({
 });
 
 //LogIn Actions
-export const loginUser = (userData) => {
-    return {
+export const loginUser = (userData) => (dispatch) => {
+    // Thực hiện các hành động bất đồng bộ ở đây
+    dispatch({
         type: 'USER_LOGIN',
         payload: userData
-    };
+    });
 };
 
 //createCustomer Action
@@ -189,7 +190,6 @@ export const createCustomer = (customerData, orderId) => async (dispatch) => {
                 throw new Error(updateOrderData.message || "Có lỗi khi cập nhật đơn hàng!");
             }
 
-            console.log("Order updated with customerId:", updateOrderData);
         } else {
             // Nếu không có orderId, gửi yêu cầu API để tạo khách hàng mới
             const response = await fetch('http://localhost:8000/customer', {
@@ -201,9 +201,7 @@ export const createCustomer = (customerData, orderId) => async (dispatch) => {
             if (!response.ok) {
                 throw new Error(data.message || "Có lỗi khi tạo khách hàng mới!");
             }
-            console.log("Customer created/updated:", data);
 
-            // Return the response data for further processing in the component
             return data;
         }
     } catch (error) {
@@ -216,5 +214,12 @@ export const createCustomer = (customerData, orderId) => async (dispatch) => {
 export const clearCart = () => {
     return {
         type: 'CLEAR_CART'
+    };
+};
+// Hành động cập nhật giỏ hàng
+export const updateCart = (cartItems) => {
+    return {
+        type: 'UPDATE_CART',
+        payload: cartItems
     };
 };

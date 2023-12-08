@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Paper, Breadcrumbs,} from '@mui/material';
+import { Paper, Breadcrumbs, } from '@mui/material';
 
 const BreadCrumb = ({ breadcrumbs }) => {
     const breadcrumbStyle = {
         fontFamily: "'Happy Monkey', sans-serif",
-        fontSize: "18px",
+        fontSize: "larger",
+        color: '#01723e',
+        cursor: 'pointer'
     };
 
     return (

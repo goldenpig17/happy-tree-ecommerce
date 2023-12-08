@@ -7,21 +7,25 @@ import BreadCrumb from './breadcrumbs/BreadCrumb';
 import Pagination from '@mui/material/Pagination';
 import { fetchProducts, setCurrentPage } from '../actions/actions';
 import Header from './header/Header';
+import {
+    Paper,
+    Box,
+    Typography
+} from '@mui/material';
 
 export default function Products() {
     const dispatch = useDispatch();
     const { products, isLoading, error } = useSelector(state => state.products);
-    console.log(products);
-    // Get filter and pagination states from Redux
+   
     const { productName, minPrice, maxPrice, productType, currentPage } = useSelector(state => state.filter);
-    const itemsPerPage = 10; // Number of items per page
+    const itemsPerPage = 10; 
 
 
     useEffect(() => {
         dispatch(fetchProducts());
     }, [dispatch]);
 
-    // Filter and paginate products based on the Redux state
+   // Filter và phân trang sản phẩm
     const filteredProducts = products
         .filter(product => {
             const productNameLower = product.name?.toLowerCase() || '';
@@ -54,6 +58,11 @@ export default function Products() {
         }
     ];
 
+    // Font Style
+    const customFontStyle = {
+        fontFamily: "'Happy Monkey', sans-serif",
+    };
+
     return (
         <>
             {isLoading && <div>Loading...</div>}
@@ -62,9 +71,13 @@ export default function Products() {
                 <div>
                     <Header />
                     <BreadCrumb breadcrumbs={breadcrumbs} />
-                    <div className="container main-container text-center">
-                         <h1>Danh sách sản phẩm</h1>
-                    </div>
+                    <Box sx={{ marginBottom: 3 }}>
+                        <Paper sx={{ padding: 2, backgroundColor: '#fef7d0', boxShadow: 3 }}>
+                            <Typography variant="h3" gutterBottom component="div" sx={{ ...customFontStyle, fontWeight: 'bold', textAlign: 'center' }}>
+                                Danh Sách Sản Phẩm
+                            </Typography>
+                        </Paper>
+                    </Box>
                     <div className="container main-container">
                         <div style={{ display: 'flex' }}>
                             <div style={{ flex: 1 }}>
@@ -79,7 +92,8 @@ export default function Products() {
                                             imageUrl={product.imageUrl}
                                             description={product.description}
                                             category={product.category}
-                                            buyPrice={product.promotionPrice}>
+                                            buyPrice={product.buyPrice}
+                                            promotionPrice={product.promotionPrice}>
                                         </ProductItem>
                                     ))}
                                 </div>
