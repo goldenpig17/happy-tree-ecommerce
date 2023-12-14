@@ -51,7 +51,7 @@ const ProductInfo = ({ name, buyPrice }) => {
                 id: _id,
                 name: productDetails.data.name,
                 price: productDetails.data.buyPrice,
-                quantity: 1
+                quantity: quantity
             };
             cart.push(productToAdd);
         }

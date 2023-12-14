@@ -30,7 +30,7 @@ export default function SignUp() {
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          alert('Đăng ký thành công! Chuyển hướng đến trang đăng nhập.');
+          setMessage('Đăng ký thành công! Chuyển hướng đến trang đăng nhập.');
           setTimeout(() => {
             navigate('/login');
           }, 2000);
