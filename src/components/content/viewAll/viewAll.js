@@ -14,9 +14,9 @@ export default function ViewAll() {
             backgroundColor: '#388E3C',
         },
         fontFamily: "'Happy Monkey', sans-serif",
-        fontSize: 'large',
+        fontSize: 'larger',
         color: '#01723e',
-        fontweight: 'bold',
+        fontweight: 'bolder',
         cursor: 'pointer',
         margin: '20px 0',
     };

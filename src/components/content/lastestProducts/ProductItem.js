@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ProductItem = ({ name, imageUrl, description, category, buyPrice, promotionPrice, _id }) => {
+const ProductItem = ({ name, imageUrl, description, category, buyPrice, promotionPrice, _id, className  }) => {
     const navigate = useNavigate();
     const navigateToProductDetails = () => {
         // Prevent default anchor action
@@ -54,7 +54,7 @@ const ProductItem = ({ name, imageUrl, description, category, buyPrice, promotio
     };
 
     return (
-        <div className="col-6 col-sm-4">
+        <div className={`col-6 col-sm-4 ${className}`}>
             <div className="product-box card bg-light mb-3" style={{ backgroundColor: '#01723e' }}>
                 <div className="card-header text-center">
                     <h5 className="card-title" >

@@ -26,7 +26,13 @@ export default function Login() {
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Tên đăng nhập hoặc Mật khẩu không đúng');
+                    if (response.status === 404) {
+                        throw new Error('Không tìm thấy User');
+                    }
+                    if (response.status === 401) {
+                        throw new Error('Mật khẩu không đúng');
+                    }
+                    throw new Error('Đăng nhập thất bại!');
                 }
                 return response.json();
             })
@@ -51,7 +57,7 @@ export default function Login() {
                     alert('Không tìm thấy người dùng. Xin hãy thử lại.');
                 }
                 else {
-                    alert('Mật khẩu không đúng');
+                    alert(error.message);
                 }
             });
     };

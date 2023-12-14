@@ -14,24 +14,18 @@
 }
 
 .carousel-image {
-    max-width: 20%;
+    max-width: 50%;
     /* Giảm kích thước của ảnh */
     height: auto;
     /* Đảm bảo tỷ lệ của ảnh */
 }
 
 .carousel-caption-container {
-    flex: 0 0 50%;
-    /* Giảm chiều rộng container xuống còn 50% và không cho phép co giãn */
-    display: flex;
-    justify-content: flex-start;
-    /* Căn nội dung bên trái container */
-    align-items: center;
     padding-left: 15px;
-    /* Đệm bên trái */
     text-align: left;
-    /* Căn nội dung caption bên trái */
-    font-family: 'Happy Monkey', sans-serif;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    padding: 10px;
 }
 
 .carousel-caption {
@@ -50,27 +44,47 @@
 }
 
 .carousel-container {
+    margin: 20px auto;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    margin: 20px auto;
-    width: 90%;
+    background-color: white;
+    width: 100%;
+    /* Make it responsive to the container's width */
     max-width: 1300px;
-    height: auto;
-    background-color: white; /* Thêm dòng này để đặt màu nền là trắng */
+    /* Adjust this as needed */
 }
 
 .carousel-caption-container .carousel-caption h5 {
     font-family: 'Happy Monkey', sans-serif;
-    font-weight: bold; 
-    font-size: 24px; 
+    font-weight: bold;
+    font-size: 24px;
     color: #3b9107;
 }
 
 .carousel-caption-container .carousel-caption p {
     font-family: 'Happy Monkey', sans-serif;
-    font-weight: bold; 
-    font-size: 18px; 
+    font-weight: bold;
+    font-size: 18px;
     color: #3b9107;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .carousel-caption-container, .carousel-image-container {
+        flex-basis: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    .carousel-caption-container, .carousel-image-container {
+        flex-basis: 50%;
+    }
+}
+
+@media (min-width: 992px) {
+    .carousel-caption-container, .carousel-image-container {
+        flex-basis: 50%;
+    }
 }

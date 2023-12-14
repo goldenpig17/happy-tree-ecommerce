@@ -45,7 +45,7 @@ class Content extends Component {
                     rightText={rightTextContent.map((text, index) => (
                         <p key={index} style={textStyle}>{text}</p>
                     ))}
-                    maxWidth="78%"
+                    maxWidth="1300px"
                 />
                 <LatestProducts></LatestProducts>
                 <ViewAll></ViewAll>

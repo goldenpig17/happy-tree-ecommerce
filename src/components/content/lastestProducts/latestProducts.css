@@ -1,0 +1,42 @@
+/* LatestProducts.css */
+.main-container {
+    padding: 20px;
+    display: "flex";
+  }
+  
+  .product-item {
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: transform 0.2s;
+  }
+  
+  .product-item:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Small devices (landscape phones, less than 768px) */
+  @media (max-width: 767px) {
+    .product-item {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+  
+  /* Medium devices (tablets, less than 992px) */
+  @media (max-width: 991px) {
+    .product-item {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+  }
+  
+  /* Large devices (desktops, less than 1200px) */
+  @media (max-width: 1199px) {
+    .product-item {
+      flex: 0 0 33.33333%;
+      max-width: 33.33333%;
+    }
+  }
+  

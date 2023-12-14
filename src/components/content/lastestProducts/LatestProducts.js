@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useEffect, useState } from "react";
 import ProductItem from './ProductItem';
+import "./latestProducts.css";
+
 
 export default function LatestProducts() {
     const [products, setProducts] = useState([]);
@@ -23,12 +25,14 @@ export default function LatestProducts() {
             })
     }, []);
 
+
     return (
         <>
             <div className="container main-container">
                 <div className='row'>
                     {products.slice(0, 6).map((product, _id) => (
                         <ProductItem key={_id}
+                            className="product-item"
                             _id={product._id}
                             name={product.name}
                             imageUrl={product.imageUrl}
@@ -36,6 +40,7 @@ export default function LatestProducts() {
                             buyPrice={product.buyPrice}
                             promotionPrice={product.promotionPrice}>
                         </ProductItem>
+
                     ))}
                 </div>
             </div>

@@ -95,15 +95,15 @@ const OrderInfo = ({ onCancel }) => {
             }]
         };
         dispatch(createCustomer(customerData))
-            .then(data => {
-                alert("Khách hàng được tạo thành công!");;
+            .then(response  => {
+                alert(response.message);;
                 dispatch(clearCart());
                 localStorage.removeItem('cart');
                 dispatch(hideModal());
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert(error.message); 
+                alert(error.response?.data?.message || "Có lỗi xảy ra!"); 
             });
     };
 

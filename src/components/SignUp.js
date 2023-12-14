@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Box, Button, TextField, Grid, Link, Paper, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import Logo from './header/logo/Logo';
 
 
@@ -7,6 +8,8 @@ export default function SignUp() {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [retypePassword, setRetypePassword] = React.useState('');
+  const [message, setMessage] = React.useState(''); // State cho thông báo
+  const navigate = useNavigate(); // Hook để chuyển hướng
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -26,11 +29,18 @@ export default function SignUp() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        // Xử lý sau khi nhận phản hồi từ server
+        if (data.success) {
+          alert('Đăng ký thành công! Chuyển hướng đến trang đăng nhập.');
+          setTimeout(() => {
+            navigate('/login');
+          }, 2000);
+        } else {
+          setMessage(data.message || 'Có lỗi xảy ra khi đăng ký.');
+        }
       })
       .catch(error => {
         console.error('Error:', error);
+        setMessage(error.message || 'Có lỗi xảy ra khi đăng ký.');
       });
   };
 
@@ -61,6 +71,16 @@ export default function SignUp() {
         >
           Đăng Ký
         </Typography>
+
+        {/* Hiển thị thông báo ở đây */}
+        <Grid item>
+          {message && (
+            <Typography color="secondary" sx={{ ...customFontStyle, fontSize: '1rem', textAlign: 'center' }}>
+              {message}
+            </Typography>
+          )}
+        </Grid>
+
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2} direction="column">
             <Grid item>
