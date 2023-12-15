@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/happy-tree/static/css/main.d76de2ec.css",
-    "main.js": "/happy-tree/static/js/main.eb14ea72.js",
-    "static/js/787.17be13cc.chunk.js": "/happy-tree/static/js/787.17be13cc.chunk.js",
-    "static/media/blue-dream.png": "/happy-tree/static/media/blue-dream.ec975049bce9506b9a70.png",
-    "static/media/benefit.png": "/happy-tree/static/media/benefit.f34f0b535cd3f544cb04.png",
-    "static/media/og-kush.png": "/happy-tree/static/media/og-kush.a0d2f6a77df0b6653473.png",
-    "static/media/backgroundImage.webp": "/happy-tree/static/media/backgroundImage.48a52d79b76a5a4737bb.webp",
-    "static/media/gelato.jpg": "/happy-tree/static/media/gelato.98bfd32eec916d0caf6f.jpg",
-    "static/media/welcomeImageNoBackground.png": "/happy-tree/static/media/welcomeImageNoBackground.de97864cbda29b9b7d23.png",
-    "static/media/logoNoBackground.png": "/happy-tree/static/media/logoNoBackground.a5d2b52f0ecde5f6449e.png",
-    "index.html": "/happy-tree/index.html",
-    "main.d76de2ec.css.map": "/happy-tree/static/css/main.d76de2ec.css.map",
-    "main.eb14ea72.js.map": "/happy-tree/static/js/main.eb14ea72.js.map",
-    "787.17be13cc.chunk.js.map": "/happy-tree/static/js/787.17be13cc.chunk.js.map"
+    "main.css": "/happy-tree-ecommerce/static/css/main.d75ac326.css",
+    "main.js": "/happy-tree-ecommerce/static/js/main.f4e1ad3e.js",
+    "static/js/787.17be13cc.chunk.js": "/happy-tree-ecommerce/static/js/787.17be13cc.chunk.js",
+    "static/media/blue-dream.png": "/happy-tree-ecommerce/static/media/blue-dream.ec975049bce9506b9a70.png",
+    "static/media/benefit.png": "/happy-tree-ecommerce/static/media/benefit.f34f0b535cd3f544cb04.png",
+    "static/media/og-kush.png": "/happy-tree-ecommerce/static/media/og-kush.a0d2f6a77df0b6653473.png",
+    "static/media/backgroundImage.webp": "/happy-tree-ecommerce/static/media/backgroundImage.48a52d79b76a5a4737bb.webp",
+    "static/media/gelato.jpg": "/happy-tree-ecommerce/static/media/gelato.98bfd32eec916d0caf6f.jpg",
+    "static/media/welcomeImageNoBackground.png": "/happy-tree-ecommerce/static/media/welcomeImageNoBackground.de97864cbda29b9b7d23.png",
+    "static/media/logoNoBackground.png": "/happy-tree-ecommerce/static/media/logoNoBackground.a5d2b52f0ecde5f6449e.png",
+    "index.html": "/happy-tree-ecommerce/index.html",
+    "main.d75ac326.css.map": "/happy-tree-ecommerce/static/css/main.d75ac326.css.map",
+    "main.f4e1ad3e.js.map": "/happy-tree-ecommerce/static/js/main.f4e1ad3e.js.map",
+    "787.17be13cc.chunk.js.map": "/happy-tree-ecommerce/static/js/787.17be13cc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d76de2ec.css",
-    "static/js/main.eb14ea72.js"
+    "static/css/main.d75ac326.css",
+    "static/js/main.f4e1ad3e.js"
   ]
 }
