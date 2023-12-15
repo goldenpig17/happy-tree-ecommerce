@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Grid, Card, CardHeader, CardMedia, CardContent, Typography, Button } from '@mui/material';
 
-const ProductItem = ({ name, imageUrl, description, category, buyPrice, promotionPrice, _id, className  }) => {
+const ProductItem = ({ name, imageUrl, description, category, buyPrice, promotionPrice, _id, className }) => {
     const navigate = useNavigate();
     const navigateToProductDetails = () => {
         // Prevent default anchor action
@@ -54,37 +55,34 @@ const ProductItem = ({ name, imageUrl, description, category, buyPrice, promotio
     };
 
     return (
-        <div className={`col-6 col-sm-4 ${className}`}>
-            <div className="product-box card bg-light mb-3" style={{ backgroundColor: '#01723e' }}>
-                <div className="card-header text-center">
-                    <h5 className="card-title" >
-                        <button className="btn btn-link" onClick={navigateToProductDetails} style={buttonStyle}>{name}</button>
-                    </h5>
-                </div>
-                <div className="card-body">
-                    <div className="text-center">
-                        <img
-                            className="card-img-top"
-                            alt="product"
-                            src={imageUrl}
-                            onClick={navigateToProductDetails}
-                            style={{ cursor: 'pointer' }}
-                        />
-                    </div>
-                    <p className="card-text description">{description}</p>
-                    <p className="card-text" style={textStyle}>
+        <Grid item xs={12} sm={6} md={4} className={className}>
+            <Card className="product-box bg-light mb-3" style={{ backgroundColor: '#01723e' }}>
+                <CardHeader
+                    title={<Button onClick={navigateToProductDetails} style={buttonStyle}>{name}</Button>}
+                    className="text-center"
+                />
+                <CardMedia
+                    component="img"
+                    image={imageUrl}
+                    alt="product"
+                    onClick={navigateToProductDetails}
+                    style={{ cursor: 'pointer' }}
+                />
+                <CardContent>
+                    <Typography variant="body2" className="card-text description">{description}</Typography>
+                    <Typography style={textStyle}>
                         <b>Loại:</b> {category}
-                    </p>
-                    <p className="card-text" style={textStyle}>
-                        <b>Giá:</b> $<span style={originalPriceStyle}>{buyPrice} </span> ${promotionPrice} 
-                    </p>
-                <div className="add-cart-container text-center">
-                    <button type="button" className="btn btn-secondary" onClick={navigateToProductDetails}>Chi tiết</button>
-                     <button type="button" className="btn btn-success" onClick={addToCart}>Thêm vào giỏ</button>
-                </div>
-            </div>
-        </div>
-        </div >
+                    </Typography>
+                    <Typography style={textStyle}>
+                        <b>Giá:</b> <span style={originalPriceStyle}>${buyPrice}</span> ${promotionPrice}
+                    </Typography>
+                    <div className="add-cart-container text-center">
+                        <Button variant="contained" color="secondary" onClick={navigateToProductDetails}>Chi tiết</Button>
+                        <Button variant="contained" color="primary" onClick={addToCart}>Thêm vào giỏ</Button>
+                    </div>
+                </CardContent>
+            </Card>
+        </Grid>
     );
 };
 

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from "react";
 import ProductItem from './ProductItem';
 import "./latestProducts.css";
+import { Grid } from '@mui/material';
 
 
 export default function LatestProducts() {
@@ -39,22 +40,19 @@ export default function LatestProducts() {
 
     return (
         <>
-            <div className="container main-container">
-                <div className='row'>
-                    {currentProducts.slice(0, 6).map((product, _id) => (
-                        <ProductItem key={_id}
-                            className="product-item"
-                            _id={product._id}
-                            name={product.name}
-                            imageUrl={product.imageUrl}
-                            category={product.category}
-                            buyPrice={product.buyPrice}
-                            promotionPrice={product.promotionPrice}>
-                        </ProductItem>
-
-                    ))}
-                </div>
-            </div>
+            <Grid container spacing={2}>
+                {currentProducts.slice(0, 6).map((product, _id) => (
+                    <ProductItem key={_id}
+                        className="product-item"
+                        _id={product._id}
+                        name={product.name}
+                        imageUrl={product.imageUrl}
+                        category={product.category}
+                        buyPrice={product.buyPrice}
+                        promotionPrice={product.promotionPrice}>
+                    </ProductItem>
+                ))}
+            </Grid>
             {/* Thanh phân trang */}
             <div className="pagination-container">
                 <button

@@ -8,6 +8,7 @@ import Pagination from '@mui/material/Pagination';
 import { fetchProducts, setCurrentPage } from '../actions/actions';
 import Header from './header/Header';
 import {
+    Grid,
     Paper,
     Box,
     Typography
@@ -16,16 +17,16 @@ import {
 export default function Products() {
     const dispatch = useDispatch();
     const { products, isLoading, error } = useSelector(state => state.products);
-   
+
     const { productName, minPrice, maxPrice, productType, currentPage } = useSelector(state => state.filter);
-    const itemsPerPage = 10; 
+    const itemsPerPage = 10;
 
 
     useEffect(() => {
         dispatch(fetchProducts());
     }, [dispatch]);
 
-   // Filter và phân trang sản phẩm
+    // Filter và phân trang sản phẩm
     const filteredProducts = products
         .filter(product => {
             const productNameLower = product.name?.toLowerCase() || '';
@@ -84,7 +85,7 @@ export default function Products() {
                                 <ProductFilter />
                             </div>
                             <div style={{ flex: 2 }}>
-                                <div className='row'>
+                                <Grid container spacing={2}>
                                     {currentItems.map((product, _id) => (
                                         <ProductItem key={_id}
                                             _id={product._id}
@@ -96,15 +97,16 @@ export default function Products() {
                                             promotionPrice={product.promotionPrice}>
                                         </ProductItem>
                                     ))}
-                                </div>
+                                </Grid>
                             </div>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                             <Pagination count={pageCount} page={currentPage} onChange={handlePageChange} />
                         </div>
                     </div>
-                </div>
-            )}
+                </div >
+            )
+            }
         </>
     )
 }

@@ -10,8 +10,16 @@ class Header extends Component {
         return (
             <>
                 <Box sx={{ flexGrow: 1 }}>
-                    <AppBar position="static" style={{background: "#fef7d0"}}>
-                        <Toolbar sx={{ justifyContent: 'space-between' }}>
+                    <AppBar position="static" style={{ background: "#fef7d0" }}>
+                        <Toolbar sx={{
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            flexDirection: 'row', 
+                            '@media (max-width:600px)': { 
+                                flexDirection: 'column', 
+                                alignItems: 'flex-start', 
+                            }
+                        }}>
                             <Logo></Logo>
                             <WelcomeImage />
                             <IconNavBar></IconNavBar>

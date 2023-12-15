@@ -5,14 +5,14 @@ export default function ProductFooter() {
     return (
         <div className="col-md-3" style={{ color: 'black' }}> {/* Assuming the footer background is dark */}
             <h5 style={{ borderBottom: '1px solid black', paddingBottom: '10px', marginBottom: '20px' }}>
-                SERVICES
+                Dịch Vụ
             </h5>
             <ul style={{ listStyleType: 'none', padding: 0 }}>
-                <li style={{ marginBottom: '10px' }}>Sitemap</li>
-                <li style={{ marginBottom: '10px' }}>Privacy Policy</li>
-                <li style={{ marginBottom: '10px' }}>Advanced Search</li>
-                <li style={{ marginBottom: '10px' }}>Terms & Condition</li>
-                <li>Contact Us</li>
+                <li style={{ marginBottom: '10px' }}>Sơ Đồ Trang</li>
+                <li style={{ marginBottom: '10px' }}>Luật</li>
+                <li style={{ marginBottom: '10px' }}>Tìm Kiếm</li>
+                <li style={{ marginBottom: '10px' }}>Luật</li>
+                <li>Liên Hệ</li>
             </ul>
         </div>
     );

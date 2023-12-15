@@ -42,7 +42,7 @@ export default function IconNavBar() {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('refreshToken');
         setIsLoggedIn(false); // Cập nhật trạng thái đăng nhập
-        navigate("/"); 
+        navigate("/");
         handleClose();
     };
 
@@ -75,31 +75,44 @@ export default function IconNavBar() {
     };
     return (
         <div>
-            <IconButton
-                size="large"
-                edge="start"
-                color="black"
-                aria-label="menu"
-                sx={{
-                    mr: 2,
-                    fontSize: '3rem',
-                    '& .MuiSvgIcon-root': {
-                        fontSize: '3rem'
-                    }
-                }}
-            >
-                <Tooltip title="Công Cụ Quản Lý">
-                    <SummarizeIcon onClick={handleAdmin} />
-                </Tooltip>
-                <Tooltip title="Tài Khoản">
-                    <AccountCircleIcon onClick={handleMenu} />
-                </Tooltip>
-                <Tooltip title="Giỏ Hàng">
+            <Tooltip title="Công Cụ Quản Lý">
+                <IconButton
+                    size="large"
+                    edge="start"
+                    color="black"
+                    aria-label="menu"
+                    sx={{ mr: 2 }}
+                    onClick={handleAdmin}
+                >
+                    <SummarizeIcon />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Tài Khoản">
+                <IconButton
+                    size="large"
+                    edge="start"
+                    color="black"
+                    aria-label="menu"
+                    sx={{ mr: 2 }}
+                    onClick={handleMenu}
+                >
+                    <AccountCircleIcon />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Giỏ Hàng">
+                <IconButton
+                    size="large"
+                    edge="start"
+                    color="black"
+                    aria-label="menu"
+                    sx={{ mr: 2 }}
+                    onClick={handleCart}
+                >
                     <Badge badgeContent={cartItemCount} color="secondary">
-                        <ShoppingCartIcon onClick={handleCart} />
+                        <ShoppingCartIcon />
                     </Badge>
-                </Tooltip>
-            </IconButton>
+                </IconButton>
+            </Tooltip>
             <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
