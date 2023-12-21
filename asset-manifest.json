@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/happy-tree-ecommerce/static/css/main.d75ac326.css",
-    "main.js": "/happy-tree-ecommerce/static/js/main.f4e1ad3e.js",
+    "main.js": "/happy-tree-ecommerce/static/js/main.b72e1b1e.js",
     "static/js/787.17be13cc.chunk.js": "/happy-tree-ecommerce/static/js/787.17be13cc.chunk.js",
     "static/media/blue-dream.png": "/happy-tree-ecommerce/static/media/blue-dream.ec975049bce9506b9a70.png",
     "static/media/benefit.png": "/happy-tree-ecommerce/static/media/benefit.f34f0b535cd3f544cb04.png",
@@ -12,11 +12,11 @@
     "static/media/logoNoBackground.png": "/happy-tree-ecommerce/static/media/logoNoBackground.a5d2b52f0ecde5f6449e.png",
     "index.html": "/happy-tree-ecommerce/index.html",
     "main.d75ac326.css.map": "/happy-tree-ecommerce/static/css/main.d75ac326.css.map",
-    "main.f4e1ad3e.js.map": "/happy-tree-ecommerce/static/js/main.f4e1ad3e.js.map",
+    "main.b72e1b1e.js.map": "/happy-tree-ecommerce/static/js/main.b72e1b1e.js.map",
     "787.17be13cc.chunk.js.map": "/happy-tree-ecommerce/static/js/787.17be13cc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d75ac326.css",
-    "static/js/main.f4e1ad3e.js"
+    "static/js/main.b72e1b1e.js"
   ]
 }
